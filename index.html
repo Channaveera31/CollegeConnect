@@ -1,0 +1,2419 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>CollegeConnect — Campus Management Simplified 🎓</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
+
+      * {
+        font-family: "Inter", sans-serif;
+      }
+
+      .gradient-bg {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      }
+
+      .glass-effect {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .floating-animation {
+        animation: floating 3s ease-in-out infinite;
+      }
+
+      @keyframes floating {
+        0%,
+        100% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+
+      .hover-scale {
+        transition: transform 0.3s ease;
+      }
+
+      .hover-scale:hover {
+        transform: scale(1.05);
+      }
+
+      .modal {
+        opacity: 0;
+        visibility: hidden;
+        transform: scale(0.9);
+        transition: all 0.3s ease;
+      }
+
+      .modal.show {
+        opacity: 1;
+        visibility: visible;
+        transform: scale(1);
+      }
+
+      .pulse-glow {
+        animation: pulse-glow 2s infinite;
+      }
+
+      @keyframes pulse-glow {
+        0%,
+        100% {
+          box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7);
+          transform: scale(1);
+        }
+        70% {
+          box-shadow: 0 0 0 10px rgba(99, 102, 241, 0);
+          transform: scale(1.02);
+        }
+      }
+
+      .animate-in {
+        opacity: 1 !important;
+        transform: translateY(0) !important;
+      }
+
+      .fade-in-up {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: all 0.6s ease;
+      }
+
+      .gradient-text {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .hero-glow {
+        filter: drop-shadow(0 0 20px rgba(99, 102, 241, 0.3));
+      }
+
+      .ripple {
+        position: absolute;
+        border-radius: 50%;
+        transform: scale(0);
+        animation: ripple 600ms linear;
+        background-color: rgba(255, 255, 255, 0.6);
+        pointer-events: none;
+      }
+
+      @keyframes ripple {
+        to {
+          transform: scale(4);
+          opacity: 0;
+        }
+      }
+
+      button {
+        position: relative;
+        overflow: hidden;
+      }
+
+      /* Custom scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 10px;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+      }
+
+      /* Auto-refresh indicator */
+      .auto-refresh {
+        position: relative;
+      }
+
+      .auto-refresh::after {
+        content: "🔄";
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        font-size: 12px;
+        animation: spin 2s linear infinite;
+      }
+
+      @keyframes spin {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Form validation styles */
+      .input-error {
+        border-color: #ef4444 !important;
+        box-shadow: 0 0 0 1px #ef4444 !important;
+      }
+
+      .input-success {
+        border-color: #10b981 !important;
+        box-shadow: 0 0 0 1px #10b981 !important;
+      }
+
+      /* Progress indicator */
+      .progress-bar {
+        height: 4px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 2px;
+        transition: width 0.3s ease;
+      }
+
+      @media (max-width: 768px) {
+        .floating-animation {
+          animation: none;
+        }
+      }
+    </style>
+  </head>
+  <body
+    class="bg-gradient-to-br from-indigo-50 via-white to-purple-50 text-gray-800 min-h-screen overflow-x-hidden"
+  >
+    <!-- Navigation -->
+    <nav
+      class="bg-white/90 backdrop-blur-md sticky top-0 z-50 shadow-lg border-b border-indigo-100"
+    >
+      <div
+        class="container mx-auto px-6 py-4 flex items-center justify-between"
+      >
+        <div class="flex items-center gap-6">
+          <a class="flex items-center gap-3" href="#home">
+            <img
+              src="Logo.png"
+              alt="CollegeConnect Logo"
+              class="w-13 h-20 shadow-lg"
+            />
+            <div class="text-2xl font-bold gradient-text">CollegeConnect+</div>
+          </a>
+          <ul class="hidden md:flex gap-8 ml-8 items-center">
+            <li>
+              <a
+                href="#home"
+                class="text-gray-700 hover:text-indigo-600 transition-colors duration-200 font-medium"
+                >🏠 Home</a
+              >
+            </li>
+            <li>
+              <a
+                href="#about"
+                class="text-gray-700 hover:text-indigo-600 transition-colors duration-200 font-medium"
+                >ℹ️ About Us</a
+              >
+            </li>
+            <li>
+              <a
+                href="#features"
+                class="text-gray-700 hover:text-indigo-600 transition-colors duration-200 font-medium"
+                >⚡ Features</a
+              >
+            </li>
+            <li>
+              <a
+                href="#testimonials"
+                class="text-gray-700 hover:text-indigo-600 transition-colors duration-200 font-medium"
+                >💬 Reviews</a
+              >
+            </li>
+          </ul>
+        </div>
+
+        <div class="flex items-center gap-4">
+          <button
+            id="exploreBtn"
+            class="hidden md:inline-flex items-center gap-2 bg-white border-2 border-indigo-600 text-indigo-600 px-4 py-2 rounded-lg hover:bg-indigo-50 transition-all duration-200 font-medium"
+          >
+            <span class="flex items-center gap-2">
+              🔍 <span>Explore Portal</span>
+            </span>
+          </button>
+          <button
+            id="getStartedBtn"
+            class="inline-flex items-center gap-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-2 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 font-medium pulse-glow"
+          >
+            🚀 Get Started
+          </button>
+
+          <!-- User Profile Button -->
+          <div class="relative" id="userDropdownRoot">
+            <button
+              id="userBtn"
+              class="flex items-center gap-2 border-2 border-gray-200 p-2 rounded-full bg-white shadow-md hover:shadow-lg transition-all duration-200"
+            >
+              <svg
+                class="w-6 h-6 text-gray-600"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M12 12c2.761 0 5-2.239 5-5s-2.239-5-5-5-5 2.239-5 5 2.239 5 5 5zM2 22c0-3.866 3.582-7 8-7h4c4.418 0 8 3.134 8 7v1H2v-1z"
+                />
+              </svg>
+            </button>
+            <div
+              id="userDropdown"
+              class="hidden absolute right-0 mt-2 w-52 bg-white rounded-lg shadow-xl py-2 border border-gray-100"
+            >
+              <a
+                href="#"
+                id="openLogin"
+                class="flex items-center gap-2 px-4 py-3 hover:bg-indigo-50 transition-colors"
+              >
+                🔑 Login
+              </a>
+              <a
+                href="#"
+                id="openRegister"
+                class="flex items-center gap-2 px-4 py-3 hover:bg-indigo-50 transition-colors"
+              >
+                📝 Register
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <main
+      class="container mx-auto px-6 py-16 fade-in-up"
+      id="home"
+      style="--delay: 0.1s"
+    >
+      <div class="grid lg:grid-cols-2 gap-12 items-center">
+        <div class="space-y-8">
+          <div class="space-y-4 fade-in-up" style="--delay: 0.2s">
+            <h1 class="text-5xl lg:text-6xl font-black leading-tight">
+              <span class="text-gray-800">CollegeConnect</span>
+              <br />
+              <span class="gradient-text">Campus Management</span>
+              <br />
+              <span class="text-gray-700">Simplified ✨</span>
+            </h1>
+            <p class="text-xl text-gray-600 leading-relaxed max-w-2xl">
+              📚 Timetables • 📝 Notes • 📊 Polls • 📅 Events — all in
+              real-time!
+              <br />
+              💬 Group chats, 🔔 push notifications, and 🔐 role-based access
+              for Students, Faculty and Admin.
+            </p>
+          </div>
+
+          <div
+            class="flex flex-col sm:flex-row gap-4 fade-in-up"
+            style="--delay: 0.3s"
+          >
+            <button
+              id="heroGetStarted"
+              class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-8 py-4 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 font-semibold text-lg pulse-glow"
+            >
+              🚀 Get Started Now
+            </button>
+            <button
+              id="heroExplore"
+              class="border-2 border-indigo-600 text-indigo-600 px-8 py-4 rounded-lg hover:bg-indigo-50 transition-all duration-200 font-semibold text-lg"
+            >
+              📱 Explore Portal
+            </button>
+          </div>
+
+          <div
+            class="grid grid-cols-3 gap-8 pt-8 fade-in-up"
+            style="--delay: 0.4s"
+          >
+            <div class="text-center">
+              <div class="text-3xl font-bold gradient-text">10k+</div>
+              <div class="text-gray-600">Students</div>
+            </div>
+            <div class="text-center">
+              <div class="text-3xl font-bold gradient-text">500+</div>
+              <div class="text-gray-600">Faculty</div>
+            </div>
+            <div class="text-center">
+              <div class="text-3xl font-bold gradient-text">50+</div>
+              <div class="text-gray-600">Colleges</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="relative fade-in-up" style="--delay: 0.5s">
+          <div class="floating-animation">
+            <div
+              class="bg-white rounded-2xl shadow-2xl p-8 max-w-md mx-auto glass-effect"
+            >
+              <div class="space-y-6">
+                <div class="flex items-center gap-4">
+                  <div
+                    class="w-12 h-12 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center text-white font-bold"
+                  >
+                    📚
+                  </div>
+                  <div>
+                    <div class="font-semibold text-gray-800">
+                      Computer Science
+                    </div>
+                    <div class="text-sm text-gray-500">
+                      Next: Data Structures
+                    </div>
+                  </div>
+                </div>
+
+                <div
+                  class="bg-gradient-to-r from-indigo-50 to-purple-50 p-4 rounded-lg"
+                >
+                  <div class="text-sm text-gray-600 mb-2">
+                    📅 Today's Schedule
+                  </div>
+                  <div class="space-y-2">
+                    <div class="flex justify-between items-center">
+                      <span class="text-sm">Mathematics</span>
+                      <span
+                        class="text-xs bg-indigo-100 text-indigo-600 px-2 py-1 rounded"
+                        >9:00 AM</span
+                      >
+                    </div>
+                    <div class="flex justify-between items-center">
+                      <span class="text-sm">Physics Lab</span>
+                      <span
+                        class="text-xs bg-purple-100 text-purple-600 px-2 py-1 rounded"
+                        >11:00 AM</span
+                      >
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-2">
+                  <div
+                    class="w-8 h-8 bg-gradient-to-r from-pink-400 to-red-500 rounded-full flex items-center justify-center text-white text-sm"
+                  >
+                    💬
+                  </div>
+                  <div class="flex-1">
+                    <div class="text-sm text-gray-800">3 new messages</div>
+                    <div class="text-xs text-gray-500">
+                      Study group discussion
+                    </div>
+                  </div>
+                  <div class="w-2 h-2 bg-red-500 rounded-full"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Floating elements -->
+          <div
+            class="absolute -top-4 -right-4 w-20 h-20 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center text-white text-2xl shadow-lg floating-animation"
+            style="animation-delay: 0.5s"
+          >
+            ⚡
+          </div>
+          <div
+            class="absolute -bottom-4 -left-4 w-16 h-16 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center text-white text-xl shadow-lg floating-animation"
+            style="animation-delay: 1s"
+          >
+            🔔
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- About Section -->
+    <section class="bg-white py-20 fade-in-up" id="about" style="--delay: 0.1s">
+      <div class="container mx-auto px-6">
+        <div class="text-center mb-16">
+          <h2 class="text-4xl font-bold gradient-text mb-4">
+            About CollegeConnect
+          </h2>
+          <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+            Revolutionizing campus management with cutting-edge technology and
+            intuitive design
+          </p>
+        </div>
+
+        <div class="grid lg:grid-cols-2 gap-16 items-center">
+          <div class="space-y-6">
+            <div class="space-y-4">
+              <h3 class="text-2xl font-bold text-gray-800">🎯 Our Mission</h3>
+              <p class="text-gray-600 leading-relaxed">
+                To streamline campus operations and enhance communication
+                between students, faculty, and administrators through innovative
+                technology solutions.
+              </p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-6">
+              <div
+                class="bg-gradient-to-r from-indigo-50 to-purple-50 p-6 rounded-lg"
+              >
+                <div class="text-3xl font-bold gradient-text">99.9%</div>
+                <div class="text-gray-600 text-sm">Uptime</div>
+              </div>
+              <div
+                class="bg-gradient-to-r from-green-50 to-blue-50 p-6 rounded-lg"
+              >
+                <div class="text-3xl font-bold gradient-text">24/7</div>
+                <div class="text-gray-600 text-sm">Support</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-8">
+            <div class="flex items-start gap-4">
+              <div
+                class="w-12 h-12 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0"
+              >
+                🔒
+              </div>
+              <div>
+                <h4 class="font-semibold text-gray-800 mb-2">
+                  Secure & Private
+                </h4>
+                <p class="text-gray-600">
+                  End-to-end encryption and role-based access control ensure
+                  your data stays protected.
+                </p>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-4">
+              <div
+                class="w-12 h-12 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0"
+              >
+                📱
+              </div>
+              <div>
+                <h4 class="font-semibold text-gray-800 mb-2">Mobile First</h4>
+                <p class="text-gray-600">
+                  Responsive design that works seamlessly across all devices and
+                  platforms.
+                </p>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-4">
+              <div
+                class="w-12 h-12 bg-gradient-to-r from-pink-400 to-red-500 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0"
+              >
+                ⚡
+              </div>
+              <div>
+                <h4 class="font-semibold text-gray-800 mb-2">
+                  Real-time Updates
+                </h4>
+                <p class="text-gray-600">
+                  Instant notifications and live data synchronization keep
+                  everyone connected.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section
+      class="bg-gradient-to-br from-indigo-50 via-white to-purple-50 py-20 fade-in-up"
+      id="features"
+      style="--delay: 0.1s"
+    >
+      <div class="container mx-auto px-6">
+        <div class="text-center mb-16">
+          <h2 class="text-4xl font-bold gradient-text mb-4">
+            ⚡ Powerful Features
+          </h2>
+          <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+            Everything you need to manage your campus efficiently
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div
+            class="bg-white p-8 rounded-xl shadow-lg hover-scale hover:shadow-xl transition-all duration-300"
+          >
+            <div
+              class="w-16 h-16 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-full flex items-center justify-center text-white text-2xl mb-6"
+            >
+              📅
+            </div>
+            <h3 class="text-xl font-bold text-gray-800 mb-4">
+              Smart Timetables
+            </h3>
+            <p class="text-gray-600">
+              Dynamic scheduling with conflict detection, room booking, and
+              automated notifications for changes.
+            </p>
+          </div>
+
+          <div
+            class="bg-white p-8 rounded-xl shadow-lg hover-scale hover:shadow-xl transition-all duration-300"
+          >
+            <div
+              class="w-16 h-16 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center text-white text-2xl mb-6"
+            >
+              📚
+            </div>
+            <h3 class="text-xl font-bold text-gray-800 mb-4">Digital Notes</h3>
+            <p class="text-gray-600">
+              Share and access course materials, assignments, and study
+              resources in one organized platform.
+            </p>
+          </div>
+
+          <div
+            class="bg-white p-8 rounded-xl shadow-lg hover-scale hover:shadow-xl transition-all duration-300"
+          >
+            <div
+              class="w-16 h-16 bg-gradient-to-r from-pink-400 to-red-500 rounded-full flex items-center justify-center text-white text-2xl mb-6"
+            >
+              💬
+            </div>
+            <h3 class="text-xl font-bold text-gray-800 mb-4">Group Chats</h3>
+            <p class="text-gray-600">
+              Secure messaging for classes, clubs, and departments with file
+              sharing and announcement channels.
+            </p>
+          </div>
+
+          <div
+            class="bg-white p-8 rounded-xl shadow-lg hover-scale hover:shadow-xl transition-all duration-300"
+          >
+            <div
+              class="w-16 h-16 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center text-white text-2xl mb-6"
+            >
+              📊
+            </div>
+            <h3 class="text-xl font-bold text-gray-800 mb-4">Live Polls</h3>
+            <p class="text-gray-600">
+              Interactive polling system for feedback, elections, and quick
+              surveys with real-time results.
+            </p>
+          </div>
+
+          <div
+            class="bg-white p-8 rounded-xl shadow-lg hover-scale hover:shadow-xl transition-all duration-300"
+          >
+            <div
+              class="w-16 h-16 bg-gradient-to-r from-purple-400 to-indigo-500 rounded-full flex items-center justify-center text-white text-2xl mb-6"
+            >
+              🎯
+            </div>
+            <h3 class="text-xl font-bold text-gray-800 mb-4">
+              Event Management
+            </h3>
+            <p class="text-gray-600">
+              Plan, promote, and manage campus events with RSVP tracking and
+              automated reminders.
+            </p>
+          </div>
+
+          <div
+            class="bg-white p-8 rounded-xl shadow-lg hover-scale hover:shadow-xl transition-all duration-300"
+          >
+            <div
+              class="w-16 h-16 bg-gradient-to-r from-emerald-400 to-cyan-500 rounded-full flex items-center justify-center text-white text-2xl mb-6"
+            >
+              🔐
+            </div>
+            <h3 class="text-xl font-bold text-gray-800 mb-4">
+              Role-Based Access
+            </h3>
+            <p class="text-gray-600">
+              Granular permissions for students, faculty, and administrators
+              with secure authentication.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section
+      class="bg-white py-20 fade-in-up"
+      id="testimonials"
+      style="--delay: 0.1s"
+    >
+      <div class="container mx-auto px-6">
+        <div class="text-center mb-16">
+          <h2 class="text-4xl font-bold gradient-text mb-4">
+            💬 What Users Say
+          </h2>
+          <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+            Trusted by thousands of students, faculty, and administrators
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8">
+          <div
+            class="bg-gradient-to-br from-indigo-50 to-purple-50 p-8 rounded-xl shadow-lg"
+          >
+            <div class="flex items-center gap-4 mb-6">
+              <div
+                class="w-12 h-12 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-full flex items-center justify-center text-white font-bold"
+              >
+                S
+              </div>
+              <div>
+                <div class="font-semibold text-gray-800">Sarah Chen</div>
+                <div class="text-sm text-gray-500">
+                  Computer Science Student
+                </div>
+              </div>
+            </div>
+            <p class="text-gray-600 leading-relaxed">
+              "CollegeConnect has completely transformed how I manage my
+              studies. The timetable integration and group chats make
+              collaboration so much easier!"
+            </p>
+            <div class="flex text-yellow-400 mt-4">⭐⭐⭐⭐⭐</div>
+          </div>
+
+          <div
+            class="bg-gradient-to-br from-green-50 to-blue-50 p-8 rounded-xl shadow-lg"
+          >
+            <div class="flex items-center gap-4 mb-6">
+              <div
+                class="w-12 h-12 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center text-white font-bold"
+              >
+                M
+              </div>
+              <div>
+                <div class="font-semibold text-gray-800">
+                  Prof. Michael Davis
+                </div>
+                <div class="text-sm text-gray-500">Mathematics Faculty</div>
+              </div>
+            </div>
+            <p class="text-gray-600 leading-relaxed">
+              "The digital notes feature and real-time polls have revolutionized
+              my teaching. Student engagement has increased significantly!"
+            </p>
+            <div class="flex text-yellow-400 mt-4">⭐⭐⭐⭐⭐</div>
+          </div>
+
+          <div
+            class="bg-gradient-to-br from-pink-50 to-red-50 p-8 rounded-xl shadow-lg"
+          >
+            <div class="flex items-center gap-4 mb-6">
+              <div
+                class="w-12 h-12 bg-gradient-to-r from-pink-400 to-red-500 rounded-full flex items-center justify-center text-white font-bold"
+              >
+                A
+              </div>
+              <div>
+                <div class="font-semibold text-gray-800">Amanda Rodriguez</div>
+                <div class="text-sm text-gray-500">Campus Administrator</div>
+              </div>
+            </div>
+            <p class="text-gray-600 leading-relaxed">
+              "Managing events and communications across campus has never been
+              this streamlined. The role-based access is perfect for our needs."
+            </p>
+            <div class="flex text-yellow-400 mt-4">⭐⭐⭐⭐⭐</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="gradient-bg py-20 text-white">
+      <div class="container mx-auto px-6 text-center">
+        <h2 class="text-4xl font-bold mb-4">
+          Ready to Transform Your Campus? 🚀
+        </h2>
+        <p class="text-xl mb-8 opacity-90 max-w-2xl mx-auto">
+          Join thousands of educational institutions already using
+          CollegeConnect
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <button
+            id="ctaGetStarted"
+            class="bg-white text-indigo-600 px-8 py-4 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 font-semibold text-lg"
+          >
+            🎓 Start Free Trial
+          </button>
+          <button
+            class="border-2 border-white text-white px-8 py-4 rounded-lg hover:bg-white hover:text-indigo-600 transition-all duration-200 font-semibold text-lg"
+          >
+            📞 Schedule Demo
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-16">
+      <div class="container mx-auto px-6">
+        <div class="grid md:grid-cols-4 gap-8">
+          <div class="space-y-4">
+            <div class="flex items-center gap-3">
+              <div
+                class="rounded-full w-10 h-10 bg-gradient-to-r from-indigo-600 to-purple-600 flex items-center justify-center text-white font-bold"
+              >
+                🎓
+              </div>
+              <div class="text-xl font-bold">CollegeConnect</div>
+            </div>
+            <p class="text-gray-400">
+              Simplifying campus management for the digital age.
+            </p>
+          </div>
+
+          <div>
+            <h4 class="font-semibold mb-4">Product</h4>
+            <div class="space-y-2 text-gray-400">
+              <div>Features</div>
+              <div>Pricing</div>
+              <div>Security</div>
+              <div>Integrations</div>
+            </div>
+          </div>
+
+          <div>
+            <h4 class="font-semibold mb-4">Company</h4>
+            <div class="space-y-2 text-gray-400">
+              <div>About Us</div>
+              <div>Careers</div>
+              <div>Blog</div>
+              <div>Contact</div>
+            </div>
+          </div>
+
+          <div>
+            <h4 class="font-semibold mb-4">Support</h4>
+            <div class="space-y-2 text-gray-400">
+              <div>Help Center</div>
+              <div>Documentation</div>
+              <div>Community</div>
+              <div>Status</div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400"
+        >
+          <p>
+            &copy; 2025 CollegeConnect. All rights reserved. Made with ❤️ for
+            education.
+          </p>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Enhanced Auth Modal (Login/Register) -->
+    <div
+      id="authModal"
+      class="modal fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50"
+    >
+      <div id="authBackdrop" class="absolute inset-0"></div>
+      <div
+        class="bg-white rounded-2xl p-8 max-w-lg w-full mx-4 shadow-2xl relative z-10 max-h-[95vh] overflow-y-auto"
+      >
+        <button
+          id="authClose"
+          class="absolute top-4 right-4 w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors"
+        >
+          ✕
+        </button>
+
+        <!-- Progress Bar -->
+        <div class="mb-6">
+          <div class="h-1 bg-gray-200 rounded-full overflow-hidden">
+            <div id="formProgress" class="progress-bar w-0"></div>
+          </div>
+        </div>
+
+        <div class="text-center mb-6">
+          <div
+            class="w-16 h-16 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-full flex items-center justify-center text-white text-2xl mx-auto mb-4"
+          >
+            🎓
+          </div>
+          <h3 id="authTitle" class="text-2xl font-bold text-gray-800">
+            🔑 Welcome Back
+          </h3>
+          <p id="authSubtitle" class="text-gray-600 mt-1">
+            Sign in to your account
+          </p>
+        </div>
+
+        <!-- Auth Form -->
+        <form id="authForm" class="space-y-4">
+          <!-- Full Name -->
+          <div id="nameSection" class="hidden">
+            <label class="block text-sm font-medium text-gray-700 mb-2"
+              >👤 Full Name *</label
+            >
+            <input
+              id="authName"
+              type="text"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+              placeholder="Enter your full name"
+            />
+          </div>
+
+          <!-- Email -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2"
+              >📧 Email Address *</label
+            >
+            <input
+              id="authEmail"
+              type="email"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+              placeholder="your@college.edu"
+              required
+            />
+          </div>
+
+          <!-- Password -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2"
+              >🔒 Password *</label
+            >
+            <div class="relative">
+              <input
+                id="authPassword"
+                type="password"
+                class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                placeholder="Enter your password"
+                required
+              />
+              <button
+                type="button"
+                id="togglePassword"
+                class="absolute right-3 top-1/2 transform -translate-y-1/2"
+              >
+                👁️
+              </button>
+            </div>
+          </div>
+
+          <!-- DOB -->
+          <div id="dobSection" class="hidden">
+            <label class="block text-sm font-medium text-gray-700 mb-2"
+              >🎂 Date of Birth *</label
+            >
+            <input
+              id="authDob"
+              type="date"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+              max="2010-12-31"
+            />
+          </div>
+
+          <!-- Gender -->
+          <div id="genderSection" class="hidden">
+            <label class="block text-sm font-medium text-gray-700 mb-2"
+              >⚧️ Gender *</label
+            >
+            <select
+              id="authGender"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+            >
+              <option value="">Select your gender</option>
+              <option value="male">👨 Male</option>
+              <option value="female">👩 Female</option>
+              <option value="non-binary">⚧️ Non-binary</option>
+              <option value="prefer-not-to-say">🤐 Prefer not to say</option>
+            </select>
+          </div>
+
+          <!-- Role -->
+          <div id="roleSection" class="hidden">
+            <label class="block text-sm font-medium text-gray-700 mb-2"
+              >👤 Select Your Role *</label
+            >
+            <select
+              id="authRole"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+            >
+              <option value="student">👨‍🎓 Student</option>
+              <option value="faculty">👨‍🏫 Faculty</option>
+              <option value="admin">👨‍💼 Administrator</option>
+            </select>
+          </div>
+
+          <!-- Phone Number -->
+          <div id="phoneSection" class="hidden">
+            <label class="block text-sm font-medium text-gray-700 mb-2"
+              >📱 Phone Number *</label
+            >
+            <input
+              id="registerPhone"
+              type="text"
+              placeholder="Enter phone number"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+            />
+          </div>
+
+          <!-- College Name -->
+          <div id="collegeSection" class="hidden">
+            <label class="block text-sm font-medium text-gray-700 mb-2"
+              >🏫 College Name *</label
+            >
+            <input
+              id="registerCollege"
+              type="text"
+              placeholder="Enter college name"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+            />
+          </div>
+
+          <!-- Department -->
+          <div id="departmentSection" class="hidden">
+            <label class="block text-sm font-medium text-gray-700 mb-2"
+              >🏢 Department *</label
+            >
+            <input
+              id="registerDepartment"
+              type="text"
+              placeholder="Enter department"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+            />
+          </div>
+
+          <!-- Year -->
+          <div id="yearSection" class="hidden">
+            <label class="block text-sm font-medium text-gray-700 mb-2"
+              >📅 Year *</label
+            >
+            <input
+              id="registerYear"
+              type="text"
+              placeholder="Enter year"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+            />
+          </div>
+
+          <!-- Terms -->
+          <div id="termsSection" class="hidden">
+            <label class="flex items-start gap-3 cursor-pointer">
+              <input
+                id="authTerms"
+                type="checkbox"
+                class="mt-1 w-4 h-4 text-indigo-600"
+              />
+              <div class="text-sm text-gray-600">
+                I agree to the
+                <a href="#" class="text-indigo-600">Terms of Service</a> and
+                <a href="#" class="text-indigo-600">Privacy Policy</a> *
+              </div>
+            </label>
+          </div>
+
+          <!-- Remember me -->
+          <div id="rememberSection">
+            <label class="flex items-center gap-3 cursor-pointer">
+              <input
+                id="authRemember"
+                type="checkbox"
+                class="w-4 h-4 text-indigo-600"
+                checked
+              />
+              <div class="text-sm text-gray-600">Remember me for 30 days</div>
+            </label>
+          </div>
+
+          <!-- Status -->
+          <div id="authStatus" class="text-center text-sm text-gray-500"></div>
+          <div
+            id="authError"
+            class="text-center text-sm text-red-500 hidden"
+          ></div>
+          <div
+            id="authSuccess"
+            class="text-center text-sm text-green-500 hidden"
+          ></div>
+
+          <!-- Submit -->
+          <button
+            id="authSubmit"
+            type="submit"
+            class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-200"
+          >
+            🔑 Sign In
+          </button>
+        </form>
+
+        <!-- Switch -->
+        <div class="mt-6 space-y-4">
+          <div class="text-center">
+            <button
+              id="authSwitch"
+              class="text-indigo-600 hover:text-indigo-500 font-medium"
+            >
+              📝 Switch to Register
+            </button>
+          </div>
+
+          <div id="forgotPasswordSection" class="text-center">
+            <button
+              id="forgotPassword"
+              class="text-sm text-gray-500 hover:text-gray-700 transition-colors"
+            >
+              🔑 Forgot your password?
+            </button>
+          </div>
+
+          <!-- Social Login Options -->
+          <div class="relative">
+            <div class="absolute inset-0 flex items-center">
+              <div class="w-full border-t border-gray-300"></div>
+            </div>
+            <div class="relative flex justify-center text-sm">
+              <span class="px-2 bg-white text-gray-500">Or continue with</span>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <button
+              id="googleAuth"
+              class="flex items-center justify-center gap-2 border border-gray-300 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              🔍 Google
+            </button>
+            <button
+              id="microsoftAuth"
+              class="flex items-center justify-center gap-2 border border-gray-300 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              📧 Microsoft
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Success/Error Messages -->
+    <div id="successMessage" class="fixed top-4 right-4 z-60 hidden">
+      <div
+        class="bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-2"
+      >
+        <span>✅</span>
+        <span id="successText">Success!</span>
+      </div>
+    </div>
+
+    <div id="errorMessage" class="fixed top-4 right-4 z-60 hidden">
+      <div
+        class="bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-2"
+      >
+        <span>❌</span>
+        <span id="errorText">Error occurred!</span>
+      </div>
+    </div>
+
+    <!-- Enhanced JavaScript with Full Registration & Auto-refresh -->
+    <script>
+      console.log("🚀 CollegeConnect Enhanced Loading...");
+
+      // App Configuration
+      const APP_CONFIG = {
+        autoRefresh: {
+          enabled: true,
+          interval: 30000, // 30 seconds
+          maxRetries: 3,
+        },
+        validation: {
+          minAge: 15,
+          passwordMinLength: 6,
+          nameMinLength: 2,
+        },
+        features: {
+          socialLogin: true,
+          rememberMe: true,
+          passwordStrength: true,
+        },
+      };
+
+      // Enhanced message system with auto-dismiss
+      function showMessage(message, type = "success", duration = 4000) {
+        const messageEl = document.getElementById(type + "Message");
+        const textEl = document.getElementById(type + "Text");
+        if (messageEl && textEl) {
+          textEl.textContent = message;
+          messageEl.classList.remove("hidden");
+
+          // Add slide-in animation
+          messageEl.style.transform = "translateX(100%)";
+          messageEl.style.transition = "transform 0.3s ease";
+
+          setTimeout(() => {
+            messageEl.style.transform = "translateX(0)";
+          }, 100);
+
+          // Auto-dismiss
+          setTimeout(() => {
+            messageEl.style.transform = "translateX(100%)";
+            setTimeout(() => {
+              messageEl.classList.add("hidden");
+            }, 300);
+          }, duration);
+        }
+      }
+
+      // Form validation helpers
+      function validateName(name) {
+        if (!name || name.trim().length < APP_CONFIG.validation.nameMinLength) {
+          return {
+            valid: false,
+            message: "Name must be at least 2 characters long",
+          };
+        }
+        if (!/^[a-zA-Z\s.'-]+$/.test(name.trim())) {
+          return {
+            valid: false,
+            message:
+              "Name can only contain letters, spaces, periods, hyphens, and apostrophes",
+          };
+        }
+        return { valid: true, message: "Valid name format" };
+      }
+
+      function validateEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!email) {
+          return { valid: false, message: "Email is required" };
+        }
+        if (!emailRegex.test(email)) {
+          return {
+            valid: false,
+            message: "Please enter a valid email address",
+          };
+        }
+        return { valid: true, message: "Valid email format" };
+      }
+
+      function validatePassword(password) {
+        if (!password) {
+          return { valid: false, message: "Password is required", strength: 0 };
+        }
+        if (password.length < APP_CONFIG.validation.passwordMinLength) {
+          return {
+            valid: false,
+            message: `Password must be at least ${APP_CONFIG.validation.passwordMinLength} characters`,
+            strength: 1,
+          };
+        }
+
+        let strength = 1;
+        let strengthText = "Weak";
+        let strengthColor = "red";
+
+        // Calculate password strength
+        if (password.length >= 8) strength++;
+        if (/[A-Z]/.test(password)) strength++;
+        if (/[0-9]/.test(password)) strength++;
+        if (/[^A-Za-z0-9]/.test(password)) strength++;
+
+        switch (strength) {
+          case 5:
+            strengthText = "Very Strong";
+            strengthColor = "green";
+            break;
+          case 4:
+            strengthText = "Strong";
+            strengthColor = "blue";
+            break;
+          case 3:
+            strengthText = "Medium";
+            strengthColor = "yellow";
+            break;
+          case 2:
+            strengthText = "Fair";
+            strengthColor = "orange";
+            break;
+          default:
+            strengthText = "Weak";
+            strengthColor = "red";
+        }
+
+        return {
+          valid: strength >= 2,
+          message:
+            strength >= 2 ? "Password meets requirements" : "Password too weak",
+          strength,
+          strengthText,
+          strengthColor,
+        };
+      }
+
+      function validateDateOfBirth(dob) {
+        if (!dob) {
+          return { valid: false, message: "Date of birth is required" };
+        }
+
+        const birthDate = new Date(dob);
+        const today = new Date();
+        const age = Math.floor(
+          (today - birthDate) / (365.25 * 24 * 60 * 60 * 1000)
+        );
+
+        if (age < APP_CONFIG.validation.minAge) {
+          return {
+            valid: false,
+            message: `Must be at least ${APP_CONFIG.validation.minAge} years old`,
+          };
+        }
+        if (age > 100) {
+          return {
+            valid: false,
+            message: "Please enter a valid date of birth",
+          };
+        }
+
+        return { valid: true, message: "Valid date of birth" };
+      }
+
+      function validateGender(gender) {
+        const validGenders = [
+          "male",
+          "female",
+          "non-binary",
+          "prefer-not-to-say",
+        ];
+        if (!gender || !validGenders.includes(gender)) {
+          return { valid: false, message: "Please select your gender" };
+        }
+        return { valid: true, message: "Gender selected" };
+      }
+
+      function validateTerms(accepted) {
+        if (!accepted) {
+          return {
+            valid: false,
+            message: "You must accept the terms and conditions",
+          };
+        }
+        return { valid: true, message: "Terms accepted" };
+      }
+
+      // Real-time form validation
+      function setupFormValidation() {
+        const fields = [
+          { id: "authName", validator: validateName, errorId: "nameError" },
+          {
+            id: "authEmail",
+            validator: validateEmail,
+            errorId: "emailError",
+            successId: "emailSuccess",
+          },
+          {
+            id: "authPassword",
+            validator: validatePassword,
+            errorId: "passwordError",
+            strengthId: "passwordStrength",
+          },
+          {
+            id: "authDob",
+            validator: validateDateOfBirth,
+            errorId: "dobError",
+          },
+          {
+            id: "authGender",
+            validator: validateGender,
+            errorId: "genderError",
+          },
+        ];
+
+        fields.forEach((field) => {
+          const input = document.getElementById(field.id);
+          const errorEl = document.getElementById(field.errorId);
+          const successEl = field.successId
+            ? document.getElementById(field.successId)
+            : null;
+
+          if (!input) return;
+
+          input.addEventListener("input", () => {
+            const value = input.value.trim();
+            const result = field.validator(value);
+
+            // Update input styling
+            input.classList.remove("input-error", "input-success");
+            if (value) {
+              input.classList.add(
+                result.valid ? "input-success" : "input-error"
+              );
+            }
+
+            // Update error message
+            if (errorEl) {
+              if (result.valid || !value) {
+                errorEl.textContent = "";
+                errorEl.classList.add("hidden");
+              } else {
+                errorEl.textContent = result.message;
+                errorEl.classList.remove("hidden");
+              }
+            }
+
+            // Update success message for email
+            if (successEl) {
+              if (result.valid && value) {
+                successEl.classList.remove("hidden");
+              } else {
+                successEl.classList.add("hidden");
+              }
+            }
+
+            // Special handling for password strength
+            if (field.id === "authPassword" && field.strengthId) {
+              const strengthEl = document.getElementById(field.strengthId);
+              const strengthTextEl = document.getElementById(
+                "passwordStrengthText"
+              );
+
+              if (strengthEl && value) {
+                strengthEl.classList.remove("hidden");
+
+                // Update strength bars
+                const bars = strengthEl.querySelectorAll(".h-1");
+                bars.forEach((bar, index) => {
+                  bar.className =
+                    index < result.strength
+                      ? `h-1 flex-1 bg-${result.strengthColor}-500 rounded`
+                      : "h-1 flex-1 bg-gray-200 rounded";
+                });
+
+                if (strengthTextEl) {
+                  strengthTextEl.textContent = `${result.strengthText} password`;
+                  strengthTextEl.className = `text-${result.strengthColor}-600`;
+                }
+              } else if (strengthEl) {
+                strengthEl.classList.add("hidden");
+              }
+            }
+
+            // Update form progress
+            updateFormProgress();
+          });
+
+          input.addEventListener("blur", () => {
+            if (input.value.trim()) {
+              const result = field.validator(input.value.trim());
+              if (!result.valid && errorEl) {
+                errorEl.textContent = result.message;
+                errorEl.classList.remove("hidden");
+              }
+            }
+          });
+        });
+      }
+
+      // Form progress tracking
+      function updateFormProgress() {
+        const mode = getCurrentMode();
+        const progressBar = document.getElementById("formProgress");
+
+        if (!progressBar) return;
+
+        let totalFields = 2; // email + password
+        let completedFields = 0;
+
+        if (mode === "register") {
+          totalFields = 6; // name + email + password + dob + gender + terms
+
+          // Check each field
+          if (document.getElementById("authName")?.value.trim())
+            completedFields++;
+          if (validateEmail(document.getElementById("authEmail")?.value).valid)
+            completedFields++;
+          if (
+            validatePassword(document.getElementById("authPassword")?.value)
+              .valid
+          )
+            completedFields++;
+          if (document.getElementById("authDob")?.value) completedFields++;
+          if (document.getElementById("authGender")?.value) completedFields++;
+          if (document.getElementById("authTerms")?.checked) completedFields++;
+        } else {
+          // Login mode
+          if (validateEmail(document.getElementById("authEmail")?.value).valid)
+            completedFields++;
+          if (document.getElementById("authPassword")?.value) completedFields++;
+        }
+
+        const progress = (completedFields / totalFields) * 100;
+        progressBar.style.width = `${progress}%`;
+      }
+
+      // Password visibility toggle
+      function setupPasswordToggle() {
+        const toggleBtn = document.getElementById("togglePassword");
+        const passwordInput = document.getElementById("authPassword");
+
+        if (toggleBtn && passwordInput) {
+          toggleBtn.addEventListener("click", () => {
+            const isPassword = passwordInput.type === "password";
+            passwordInput.type = isPassword ? "text" : "password";
+            toggleBtn.textContent = isPassword ? "🙈" : "👁️";
+          });
+        }
+      }
+
+      // Modal functions
+      function showModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+          modal.classList.add("show");
+          document.body.style.overflow = "hidden";
+
+          // Focus on first input
+          setTimeout(() => {
+            const firstInput = modal.querySelector(
+              'input:not([type="checkbox"])'
+            );
+            if (firstInput) firstInput.focus();
+          }, 300);
+        }
+      }
+
+      function hideModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+          modal.classList.remove("show");
+          document.body.style.overflow = "";
+
+          // Clear form
+          const form = modal.querySelector("form");
+          if (form) {
+            form.reset();
+            clearValidationStates();
+            updateFormProgress();
+          }
+        }
+      }
+
+      function clearValidationStates() {
+        // Clear all validation states
+        document
+          .querySelectorAll(".input-error, .input-success")
+          .forEach((el) => {
+            el.classList.remove("input-error", "input-success");
+          });
+
+        document.querySelectorAll('[id$="Error"]').forEach((el) => {
+          el.classList.add("hidden");
+          el.textContent = "";
+        });
+
+        document.querySelectorAll('[id$="Success"]').forEach((el) => {
+          el.classList.add("hidden");
+        });
+
+        const strengthEl = document.getElementById("passwordStrength");
+        if (strengthEl) strengthEl.classList.add("hidden");
+      }
+
+      // Auth modal mode management
+      function getCurrentMode() {
+        const title = document.getElementById("authTitle");
+        return title && title.textContent.includes("Create")
+          ? "register"
+          : "login";
+      }
+
+      function updateAuthModalForMode(mode) {
+        const title = document.getElementById("authTitle");
+        const subtitle = document.getElementById("authSubtitle");
+        const submitBtn = document.getElementById("authSubmit");
+        const switchBtn = document.getElementById("authSwitch");
+
+        const registerOnlySections = [
+          "nameSection",
+          "dobSection",
+          "genderSection",
+          "roleSection",
+          "phoneSection",
+          "collegeSection",
+          "departmentSection",
+          "yearSection",
+          "termsSection",
+        ];
+        const loginOnlySections = ["rememberSection", "forgotPasswordSection"];
+
+        if (mode === "register") {
+          if (title) title.textContent = "📝 Create Account";
+          if (subtitle)
+            subtitle.textContent = "Join the CollegeConnect community";
+          if (submitBtn) submitBtn.textContent = "🚀 Create Account";
+          if (switchBtn)
+            switchBtn.textContent = "🔑 Already have an account? Sign in";
+
+          registerOnlySections.forEach((sectionId) => {
+            const section = document.getElementById(sectionId);
+            if (section) section.classList.remove("hidden");
+          });
+
+          loginOnlySections.forEach((sectionId) => {
+            const section = document.getElementById(sectionId);
+            if (section) section.classList.add("hidden");
+          });
+        } else {
+          if (title) title.textContent = "🔑 Welcome Back";
+          if (subtitle) subtitle.textContent = "Sign in to your account";
+          if (submitBtn) submitBtn.textContent = "🔑 Sign In";
+          if (switchBtn)
+            switchBtn.textContent = "📝 New to CollegeConnect? Register";
+
+          registerOnlySections.forEach((sectionId) => {
+            const section = document.getElementById(sectionId);
+            if (section) section.classList.add("hidden");
+          });
+
+          loginOnlySections.forEach((sectionId) => {
+            const section = document.getElementById(sectionId);
+            if (section) section.classList.remove("hidden");
+          });
+        }
+
+        clearValidationStates();
+        updateFormProgress();
+      }
+
+      // Enhanced form submission with complete validation
+      async function handleAuthSubmission(e) {
+        e.preventDefault();
+
+        console.log("Submit event triggered, mode:", getCurrentMode());
+
+        const mode = getCurrentMode();
+        const formData = getFormData();
+
+        // Validate all fields
+        if (!validateAllFields(formData, mode)) {
+          showMessage("❌ Please fix the errors above", "error");
+          return;
+        }
+
+        // Set loading state
+        setAuthLoading(true);
+
+        try {
+          if (mode === "register") {
+            await simulateRegistration(formData);
+          } else {
+            await simulateLogin(formData);
+          }
+        } catch (error) {
+          console.error("Auth error:", error);
+          showMessage(error.message, "error");
+        } finally {
+          setAuthLoading(false);
+        }
+      }
+
+      function getFormData() {
+        return {
+          name: document.getElementById("authName")?.value?.trim() || "",
+          email: document.getElementById("authEmail")?.value?.trim() || "",
+          password: document.getElementById("authPassword")?.value || "",
+          dob: document.getElementById("authDob")?.value || "",
+          gender: document.getElementById("authGender")?.value || "",
+          role: document.getElementById("authRole")?.value || "student",
+          phone: document.getElementById("registerPhone")?.value?.trim() || "",
+          college:
+            document.getElementById("registerCollege")?.value?.trim() || "",
+          department:
+            document.getElementById("registerDepartment")?.value?.trim() || "",
+          year: document.getElementById("registerYear")?.value?.trim() || "",
+          terms: document.getElementById("authTerms")?.checked || false,
+          remember: document.getElementById("authRemember")?.checked || false,
+        };
+      }
+
+      function validateAllFields(data, mode) {
+        let isValid = true;
+
+        if (mode === "register") {
+          // Validate name
+          const nameResult = validateName(data.name);
+          updateFieldValidation("authName", "nameError", nameResult);
+          if (!nameResult.valid) isValid = false;
+
+          // Validate date of birth
+          const dobResult = validateDateOfBirth(data.dob);
+          updateFieldValidation("authDob", "dobError", dobResult);
+          if (!dobResult.valid) isValid = false;
+
+          // Validate gender
+          const genderResult = validateGender(data.gender);
+          updateFieldValidation("authGender", "genderError", genderResult);
+          if (!genderResult.valid) isValid = false;
+
+          // Validate terms
+          const termsResult = validateTerms(data.terms);
+          updateFieldValidation("authTerms", "termsError", termsResult);
+          if (!termsResult.valid) isValid = false;
+        }
+
+        // Validate email (always required)
+        const emailResult = validateEmail(data.email);
+        updateFieldValidation("authEmail", "emailError", emailResult);
+        if (!emailResult.valid) isValid = false;
+
+        // Validate password (always required)
+        const passwordResult = validatePassword(data.password);
+        updateFieldValidation("authPassword", "passwordError", passwordResult);
+        if (!passwordResult.valid) isValid = false;
+
+        return isValid;
+      }
+
+      function updateFieldValidation(fieldId, errorId, result) {
+        const field = document.getElementById(fieldId);
+        const errorEl = document.getElementById(errorId);
+
+        if (field) {
+          field.classList.remove("input-error", "input-success");
+          if (field.value.trim()) {
+            field.classList.add(result.valid ? "input-success" : "input-error");
+          }
+        }
+
+        if (errorEl) {
+          if (result.valid) {
+            errorEl.classList.add("hidden");
+          } else {
+            errorEl.textContent = result.message;
+            errorEl.classList.remove("hidden");
+          }
+        }
+      }
+
+      function setAuthLoading(loading = true) {
+        const submitBtn = document.getElementById("authSubmit");
+        const statusEl = document.getElementById("authStatus");
+
+        if (submitBtn) {
+          submitBtn.disabled = loading;
+          submitBtn.innerHTML = loading
+            ? "⏳ Processing..."
+            : getCurrentMode() === "register"
+            ? "🚀 Create Account"
+            : "🔑 Sign In";
+        }
+
+        if (statusEl) {
+          statusEl.innerHTML = loading ? "⏳ Please wait..." : "";
+        }
+      }
+
+      // Simulated authentication functions
+      /* async function simulateRegistration(data) {
+      console.log('Creating account with data:', { ...data, password: '[HIDDEN]' });
+      
+      // Simulate API call delay
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // Store user data in memory (demo purposes)
+      const userData = {
+        id: 'user_' + Date.now(),
+        name: data.name,
+        email: data.email,
+        dob: data.dob,
+        gender: data.gender,
+        role: data.role,
+        createdAt: new Date().toISOString(),
+        isActive: true
+      };
+      
+      // Store in sessionStorage for demo
+      sessionStorage.setItem('tempUser', JSON.stringify(userData));
+      
+      showMessage(`🎉 Account created successfully for ${data.name}! Please sign in with your credentials.`, 'success', 5000);
+      
+      // Auto-switch to login mode after success
+      setTimeout(() => {
+        updateAuthModalForMode('login');
+        
+        // Pre-fill email for convenience
+        const emailInput = document.getElementById('authEmail');
+        if (emailInput) {
+          emailInput.value = data.email;
+        }
+        
+        // Clear password field and focus on it
+        const passwordInput = document.getElementById('authPassword');
+        if (passwordInput) {
+          passwordInput.value = '';
+          passwordInput.focus();
+        }
+        
+        showMessage('👍 You can now sign in with your new account', 'success');
+      }, 3000);
+    }
+
+    async function simulateLogin(data) {
+      console.log('Logging in user:', data.email);
+      
+      // Check if user exists in demo storage
+      const tempUser = sessionStorage.getItem('tempUser');
+      let userData = null;
+      
+      if (tempUser) {
+        userData = JSON.parse(tempUser);
+        if (userData.email !== data.email) {
+          throw new Error('❌ No account found with this email. Please register first.');
+        }
+      } else {
+        // For demo, allow any email/password combination
+        userData = {
+          id: 'demo_user',
+          name: data.email.split('@')[0],
+          email: data.email,
+          role: 'student',
+          createdAt: new Date().toISOString()
+        };
+      }
+      
+      // Simulate API call delay
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      const roleEmoji = {
+        student: '👨‍🎓',
+        faculty: '👨‍🏫',
+        admin: '👨‍💼'
+      }[userData.role] || '👤';
+      
+      showMessage(`🎉 Welcome back ${roleEmoji} ${userData.name}! Redirecting to dashboard...`, 'success');
+      
+      // Store current user session
+      sessionStorage.setItem('currentUser', JSON.stringify(userData));
+      
+      // Redirect after brief delay
+      setTimeout(() => {
+        hideModal('authModal');
+        showMessage('🚧 Dashboard coming soon! This is a demo version.', 'success');
+      }, 2500);
+    }
+*/
+      // Auto-refresh functionality
+      class AutoRefreshManager {
+        constructor() {
+          this.isEnabled = APP_CONFIG.autoRefresh.enabled;
+          this.interval = APP_CONFIG.autoRefresh.interval;
+          this.retryCount = 0;
+          this.maxRetries = APP_CONFIG.autoRefresh.maxRetries;
+          this.refreshTimer = null;
+          this.lastActivity = Date.now();
+        }
+
+        start() {
+          if (!this.isEnabled) return;
+
+          console.log("🔄 Starting auto-refresh manager...");
+          this.showRefreshIndicator();
+
+          // Set up activity tracking
+          this.trackUserActivity();
+
+          // Start refresh cycle
+          this.scheduleNextRefresh();
+        }
+
+        showRefreshIndicator() {
+          const indicator = document.getElementById("autoRefreshIndicator");
+          if (indicator) {
+            indicator.classList.remove("hidden");
+
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+              indicator.classList.add("hidden");
+            }, 5000);
+          }
+        }
+
+        trackUserActivity() {
+          const events = [
+            "mousedown",
+            "mousemove",
+            "keypress",
+            "scroll",
+            "touchstart",
+          ];
+
+          events.forEach((event) => {
+            document.addEventListener(
+              event,
+              () => {
+                this.lastActivity = Date.now();
+              },
+              { passive: true }
+            );
+          });
+        }
+
+        scheduleNextRefresh() {
+          if (this.refreshTimer) {
+            clearTimeout(this.refreshTimer);
+          }
+
+          this.refreshTimer = setTimeout(() => {
+            this.performRefresh();
+          }, this.interval);
+        }
+
+        async performRefresh() {
+          // Only refresh if user has been inactive for 10+ seconds
+          const timeSinceActivity = Date.now() - this.lastActivity;
+
+          if (timeSinceActivity < 10000) {
+            console.log("🔄 Skipping refresh - user is active");
+            this.scheduleNextRefresh();
+            return;
+          }
+
+          try {
+            console.log("🔄 Performing auto-refresh...");
+
+            // Update stats in hero section with animation
+            await this.refreshHeroStats();
+
+            // Update any time-sensitive content
+            this.updateTimeElements();
+
+            // Reset retry count on success
+            this.retryCount = 0;
+
+            // Show subtle notification
+            this.showRefreshNotification();
+          } catch (error) {
+            console.error("Auto-refresh failed:", error);
+            this.retryCount++;
+
+            if (this.retryCount >= this.maxRetries) {
+              console.warn(
+                "Max refresh retries reached, disabling auto-refresh"
+              );
+              this.stop();
+              return;
+            }
+          }
+
+          // Schedule next refresh
+          this.scheduleNextRefresh();
+        }
+
+        async refreshHeroStats() {
+          const stats = [
+            { id: "students", base: 10000, variance: 50 },
+            { id: "faculty", base: 500, variance: 10 },
+            { id: "colleges", base: 50, variance: 2 },
+          ];
+
+          // Find stat elements and update them
+          const statElements = document.querySelectorAll(
+            ".text-3xl.font-bold.gradient-text"
+          );
+
+          statElements.forEach((element, index) => {
+            if (index < stats.length) {
+              const stat = stats[index];
+              const currentValue =
+                parseInt(element.textContent.replace(/[^0-9]/g, "")) ||
+                stat.base;
+              const newValue =
+                stat.base + Math.floor(Math.random() * stat.variance);
+
+              // Animate the change
+              this.animateNumberChange(element, currentValue, newValue);
+            }
+          });
+        }
+
+        animateNumberChange(element, from, to) {
+          const duration = 2000;
+          const startTime = performance.now();
+
+          const animate = (currentTime) => {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+
+            const current = Math.floor(from + (to - from) * progress);
+            const suffix = to >= 1000 ? "k+" : "+";
+            const displayValue =
+              to >= 1000 ? (current / 1000).toFixed(1) : current;
+
+            element.textContent = displayValue + suffix;
+
+            if (progress < 1) {
+              requestAnimationFrame(animate);
+            }
+          };
+
+          requestAnimationFrame(animate);
+        }
+
+        updateTimeElements() {
+          // Update any time-based elements (like "3 new messages" in the hero card)
+          const messageCount = Math.floor(Math.random() * 10) + 1;
+          const messageText = document.querySelector(".text-sm.text-gray-800");
+
+          if (messageText && messageText.textContent.includes("messages")) {
+            messageText.textContent = `${messageCount} new message${
+              messageCount !== 1 ? "s" : ""
+            }`;
+          }
+        }
+
+        showRefreshNotification() {
+          // Create subtle refresh notification
+          const notification = document.createElement("div");
+          notification.className =
+            "fixed bottom-4 left-4 z-50 bg-blue-100 text-blue-700 px-4 py-2 rounded-lg shadow-lg text-sm flex items-center gap-2";
+          notification.innerHTML = `
+          <span class="animate-spin">🔄</span>
+          <span>Data refreshed</span>
+        `;
+
+          document.body.appendChild(notification);
+
+          // Fade out after 2 seconds
+          setTimeout(() => {
+            notification.style.opacity = "0";
+            notification.style.transform = "translateY(20px)";
+            notification.style.transition = "all 0.3s ease";
+
+            setTimeout(() => {
+              notification.remove();
+            }, 300);
+          }, 2000);
+        }
+
+        stop() {
+          if (this.refreshTimer) {
+            clearTimeout(this.refreshTimer);
+            this.refreshTimer = null;
+          }
+
+          const indicator = document.getElementById("autoRefreshIndicator");
+          if (indicator) {
+            indicator.classList.add("hidden");
+          }
+
+          console.log("🛑 Auto-refresh stopped");
+        }
+      }
+
+      // Initialize auto-refresh manager
+      const autoRefresh = new AutoRefreshManager();
+
+      // Social authentication handlers
+      function setupSocialAuth() {
+        const googleBtn = document.getElementById("googleAuth");
+        const microsoftBtn = document.getElementById("microsoftAuth");
+
+        if (googleBtn) {
+          googleBtn.addEventListener("click", () => {
+            showMessage("🔍 Google authentication coming soon!", "success");
+          });
+        }
+
+        if (microsoftBtn) {
+          microsoftBtn.addEventListener("click", () => {
+            showMessage("📧 Microsoft authentication coming soon!", "success");
+          });
+        }
+      }
+
+      // Forgot password functionality
+      function setupForgotPassword() {
+        const forgotBtn = document.getElementById("forgotPassword");
+
+        if (forgotBtn) {
+          forgotBtn.addEventListener("click", () => {
+            const email = document.getElementById("authEmail")?.value?.trim();
+
+            if (!email) {
+              showMessage("📧 Please enter your email address first", "error");
+              document.getElementById("authEmail")?.focus();
+              return;
+            }
+
+            if (!validateEmail(email).valid) {
+              showMessage("📧 Please enter a valid email address", "error");
+              return;
+            }
+
+            // Simulate password reset
+            showMessage(
+              `📧 Password reset link sent to ${email}! Check your inbox.`,
+              "success",
+              6000
+            );
+          });
+        }
+      }
+
+      // Animation on scroll
+      const observerOptions = {
+        threshold: 0.1,
+        rootMargin: "0px 0px -50px 0px",
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("animate-in");
+          }
+        });
+      }, observerOptions);
+
+      document.querySelectorAll(".fade-in-up").forEach((el) => {
+        observer.observe(el);
+      });
+
+      // User dropdown functionality
+      const userBtn = document.getElementById("userBtn");
+      const userDropdown = document.getElementById("userDropdown");
+
+      if (userBtn && userDropdown) {
+        userBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          userDropdown.classList.toggle("hidden");
+        });
+
+        document.addEventListener("click", () => {
+          userDropdown.classList.add("hidden");
+        });
+      }
+
+      // Main button event handlers
+      function handleGetStarted() {
+        showMessage(
+          "🎉 Welcome to CollegeConnect! Please create your account to continue.",
+          "success"
+        );
+        updateAuthModalForMode("register");
+        showModal("authModal");
+      }
+
+      function handleExplore() {
+        showMessage(
+          "🔍 Please login to explore the portal features.",
+          "success"
+        );
+        updateAuthModalForMode("login");
+        showModal("authModal");
+      }
+
+      // Event listeners for main buttons
+      document
+        .getElementById("getStartedBtn")
+        ?.addEventListener("click", handleGetStarted);
+      document
+        .getElementById("heroGetStarted")
+        ?.addEventListener("click", handleGetStarted);
+      document
+        .getElementById("ctaGetStarted")
+        ?.addEventListener("click", handleGetStarted);
+
+      document
+        .getElementById("exploreBtn")
+        ?.addEventListener("click", handleExplore);
+      document
+        .getElementById("heroExplore")
+        ?.addEventListener("click", handleExplore);
+
+      // Auth form handling
+      const authForm = document.getElementById("authForm");
+      if (authForm) {
+        authForm.addEventListener("submit", handleAuthSubmission);
+      }
+
+      // Auth switch button
+      const authSwitch = document.getElementById("authSwitch");
+      if (authSwitch) {
+        authSwitch.addEventListener("click", (e) => {
+          e.preventDefault();
+          const currentMode = getCurrentMode();
+          const newMode = currentMode === "register" ? "login" : "register";
+          updateAuthModalForMode(newMode);
+
+          // Clear form when switching
+          authForm?.reset();
+          clearValidationStates();
+          updateFormProgress();
+        });
+      }
+
+      // Dynamic dropdown handlers
+      document.addEventListener("click", (e) => {
+        if (e.target.id === "openLogin" || e.target.closest("#openLogin")) {
+          e.preventDefault();
+          updateAuthModalForMode("login");
+          showModal("authModal");
+          userDropdown?.classList.add("hidden");
+        }
+
+        if (
+          e.target.id === "openRegister" ||
+          e.target.closest("#openRegister")
+        ) {
+          e.preventDefault();
+          updateAuthModalForMode("register");
+          showModal("authModal");
+          userDropdown?.classList.add("hidden");
+        }
+      });
+
+      // Modal close functionality
+      const authClose = document.getElementById("authClose");
+      const authBackdrop = document.getElementById("authBackdrop");
+
+      if (authClose) {
+        authClose.addEventListener("click", () => {
+          hideModal("authModal");
+        });
+      }
+
+      if (authBackdrop) {
+        authBackdrop.addEventListener("click", () => {
+          hideModal("authModal");
+        });
+      }
+
+      // Smooth scrolling for navigation links
+      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener("click", function (e) {
+          const href = this.getAttribute("href");
+          if (href === "#" || href === "#openLogin" || href === "#openRegister")
+            return;
+
+          e.preventDefault();
+          const target = document.querySelector(href);
+          if (target) {
+            target.scrollIntoView({
+              behavior: "smooth",
+              block: "start",
+            });
+          }
+        });
+      });
+
+      // Add ripple effect to buttons
+      function createRipple(event) {
+        const button = event.currentTarget;
+        const circle = document.createElement("span");
+        const diameter = Math.max(button.clientWidth, button.clientHeight);
+        const radius = diameter / 2;
+
+        circle.style.width = circle.style.height = `${diameter}px`;
+        circle.style.left = `${event.clientX - button.offsetLeft - radius}px`;
+        circle.style.top = `${event.clientY - button.offsetTop - radius}px`;
+        circle.classList.add("ripple");
+
+        const ripple = button.getElementsByClassName("ripple")[0];
+        if (ripple) {
+          ripple.remove();
+        }
+
+        button.appendChild(circle);
+      }
+
+      // Add ripple effect to all buttons
+      document.querySelectorAll("button").forEach((button) => {
+        button.addEventListener("click", createRipple);
+      });
+
+      // ESC key to close modals
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          const openModal = document.querySelector(".modal.show");
+          if (openModal) {
+            openModal.classList.remove("show");
+            document.body.style.overflow = "";
+          }
+        }
+      });
+
+      // Enhanced keyboard navigation
+      document.addEventListener("keydown", (e) => {
+        const modal = document.querySelector(".modal.show");
+        if (!modal) return;
+
+        if (e.key === "Tab") {
+          // Enhanced tab navigation within modal
+          const focusableElements = modal.querySelectorAll(
+            'input:not([disabled]), button:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+          );
+
+          const firstElement = focusableElements[0];
+          const lastElement = focusableElements[focusableElements.length - 1];
+
+          if (e.shiftKey) {
+            if (document.activeElement === firstElement) {
+              e.preventDefault();
+              lastElement.focus();
+            }
+          } else {
+            if (document.activeElement === lastElement) {
+              e.preventDefault();
+              firstElement.focus();
+            }
+          }
+        }
+
+        if (
+          e.key === "Enter" &&
+          e.target.tagName !== "BUTTON" &&
+          e.target.type !== "submit"
+        ) {
+          // Allow Enter to submit form from any input
+          const submitBtn = modal.querySelector('button[type="submit"]');
+          if (submitBtn && !submitBtn.disabled) {
+            submitBtn.click();
+          }
+        }
+      });
+
+      // Performance monitoring
+      function initializePerformanceMonitoring() {
+        // Monitor page load performance
+        window.addEventListener("load", () => {
+          const loadTime = performance.now();
+          console.log(`⚡ Page loaded in ${Math.round(loadTime)}ms`);
+
+          if (loadTime > 3000) {
+            showMessage(
+              "⚡ Page loaded! For better performance, consider refreshing or checking your connection.",
+              "success"
+            );
+          }
+
+          // Start auto-refresh after page loads
+          setTimeout(() => {
+            autoRefresh.start();
+          }, 2000);
+        });
+
+        // Monitor long tasks (performance budget)
+        if ("PerformanceObserver" in window) {
+          const observer = new PerformanceObserver((list) => {
+            list.getEntries().forEach((entry) => {
+              if (entry.duration > 50) {
+                console.warn(`⚠️ Long task detected: ${entry.duration}ms`);
+              }
+            });
+          });
+
+          observer.observe({ entryTypes: ["longtask"] });
+        }
+      }
+
+      // Connection status monitoring
+      function initializeConnectionMonitoring() {
+        window.addEventListener("online", () => {
+          showMessage(
+            "🟢 Connection restored! All features are now available.",
+            "success"
+          );
+          autoRefresh.start();
+        });
+
+        window.addEventListener("offline", () => {
+          showMessage(
+            "🔴 Connection lost. Some features may not work properly.",
+            "error",
+            8000
+          );
+          autoRefresh.stop();
+        });
+
+        // Initial connection check
+        if (!navigator.onLine) {
+          showMessage(
+            "🔴 You appear to be offline. Please check your internet connection.",
+            "error"
+          );
+        }
+      }
+
+      // Enhanced error handling
+      window.addEventListener("error", (event) => {
+        console.error("Global error:", event.error);
+
+        // Don't show error messages for script loading failures (external resources)
+        if (event.error && !event.filename.includes("chrome-extension")) {
+          showMessage(
+            "⚠️ Something went wrong. Please refresh the page if issues persist.",
+            "error"
+          );
+        }
+      });
+
+      window.addEventListener("unhandledrejection", (event) => {
+        console.error("Unhandled promise rejection:", event.reason);
+        showMessage(
+          "⚠️ Something unexpected happened. Please try again.",
+          "error"
+        );
+      });
+
+      // Initialize everything when DOM is ready
+      document.addEventListener("DOMContentLoaded", () => {
+        console.log("🎯 Initializing CollegeConnect Enhanced...");
+
+        // Setup form validation
+        setupFormValidation();
+
+        // Setup password toggle
+        setupPasswordToggle();
+
+        // Setup social auth
+        setupSocialAuth();
+
+        // Setup forgot password
+        setupForgotPassword();
+
+        // Initialize performance monitoring
+        initializePerformanceMonitoring();
+
+        // Initialize connection monitoring
+        initializeConnectionMonitoring();
+
+        // Show welcome message
+        setTimeout(() => {
+          showMessage(
+            '🎉 Welcome to CollegeConnect! Click "Get Started" to create your account.',
+            "success"
+          );
+        }, 1000);
+
+        console.log("✅ CollegeConnect Enhanced initialized successfully!");
+      });
+
+      // Global utility functions
+      window.showMessage = showMessage;
+      window.updateAuthModalForMode = updateAuthModalForMode;
+      window.getCurrentMode = getCurrentMode;
+      window.autoRefresh = autoRefresh;
+
+      console.log("🎯 CollegeConnect Enhanced JavaScript loaded!");
+    </script>
+    <!-- Firebase & App Scripts -->
+    <script src="./assets/js/firebase-config.js" type="module"></script>
+    <script src="./assets/js/auth-enhanced.js" type="module"></script>
+    <script src="./assets/js/main.js" type="module"></script>
+  </body>
+</html>

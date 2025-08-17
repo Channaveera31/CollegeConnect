@@ -1,0 +1,2566 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Admin Dashboard — CollegeConnect 🎓</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      * {
+        font-family: "Inter", sans-serif;
+      }
+
+      .glass-effect {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .modal {
+        opacity: 0;
+        visibility: hidden;
+        transform: scale(0.9);
+        transition: all 0.3s ease;
+      }
+
+      .modal.show {
+        opacity: 1;
+        visibility: visible;
+        transform: scale(1);
+      }
+
+      .sidebar-transition {
+        transition: transform 0.3s ease;
+      }
+
+      @media (max-width: 768px) {
+        .sidebar {
+          transform: translateX(-100%);
+        }
+
+        .sidebar.show {
+          transform: translateX(0);
+        }
+      }
+
+      .floating-animation {
+        animation: floating 3s ease-in-out infinite;
+      }
+
+      @keyframes floating {
+        0%,
+        100% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-8px);
+        }
+      }
+
+      .pulse-dot {
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+
+      .stat-card {
+        transition: all 0.3s ease;
+      }
+
+      .stat-card:hover {
+        transform: translateY(-2px) scale(1.02);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+      }
+
+      .quick-action-btn {
+        transition: all 0.3s ease;
+      }
+
+      .quick-action-btn:hover {
+        transform: translateY(-5px) scale(1.05);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+      }
+
+      .nav-item {
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+      }
+
+      .nav-item:hover {
+        transform: translateX(4px);
+      }
+
+      .nav-item.active {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+      }
+
+      .role-student {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      }
+
+      .role-faculty {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      }
+
+      .role-admin {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      }
+
+      .gradient-text {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .role-badge {
+        font-size: 0.7rem;
+        padding: 0.2rem 0.5rem;
+        border-radius: 9999px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .role-badge.student {
+        background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+        color: white;
+      }
+
+      .role-badge.faculty {
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+      }
+
+      .role-badge.admin {
+        background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+        color: white;
+      }
+
+      .notification-badge {
+        animation: bounce 2s infinite;
+      }
+
+      @keyframes bounce {
+        0%,
+        20%,
+        53%,
+        80%,
+        100% {
+          transform: translate3d(0, 0, 0);
+        }
+        40%,
+        43% {
+          transform: translate3d(0, -8px, 0);
+        }
+        70% {
+          transform: translate3d(0, -4px, 0);
+        }
+        90% {
+          transform: translate3d(0, -2px, 0);
+        }
+      }
+
+      .shimmer {
+        background: linear-gradient(
+          90deg,
+          #f0f0f0 25%,
+          transparent 50%,
+          #f0f0f0 75%
+        );
+        background-size: 200% 100%;
+        animation: shimmer 1.5s infinite;
+      }
+
+      @keyframes shimmer {
+        0% {
+          background-position: -200% 0;
+        }
+        100% {
+          background-position: 200% 0;
+        }
+      }
+
+      .chat-container {
+        height: 400px;
+        overflow-y: auto;
+      }
+
+      .message {
+        animation: slideIn 0.3s ease-out;
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .typing-indicator {
+        animation: typing 1.4s infinite ease-in-out;
+      }
+
+      @keyframes typing {
+        0%,
+        80%,
+        100% {
+          transform: scale(0);
+        }
+        40% {
+          transform: scale(1);
+        }
+      }
+
+      .online-indicator {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 12px;
+        height: 12px;
+        background: #10b981;
+        border-radius: 50%;
+        border: 2px solid white;
+      }
+
+      .progress-ring {
+        transform: rotate(-90deg);
+        transition: stroke-dashoffset 0.5s ease-in-out;
+      }
+
+      .calendar-day {
+        transition: all 0.2s ease;
+      }
+
+      .calendar-day:hover {
+        transform: scale(1.05);
+      }
+
+      .calendar-day.today {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+      }
+
+      .calendar-day.has-events {
+        position: relative;
+      }
+
+      .calendar-day.has-events::after {
+        content: "";
+        position: absolute;
+        bottom: 2px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 4px;
+        height: 4px;
+        background: #f59e0b;
+        border-radius: 50%;
+      }
+    </style>
+  </head>
+  <body
+    class="role-admin bg-gradient-to-br from-indigo-50 via-white to-purple-50 min-h-screen"
+  >
+    <!-- Mobile Menu Button -->
+    <button
+      id="mobileMenuBtn"
+      class="md:hidden fixed top-4 left-4 z-50 bg-white p-2 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
+    >
+      <svg
+        class="w-6 h-6"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M4 6h16M4 12h16M4 18h16"
+        ></path>
+      </svg>
+    </button>
+
+    <!-- Sidebar -->
+    <aside
+      id="sidebar"
+      class="sidebar sidebar-transition fixed left-0 top-0 h-full w-64 bg-white shadow-2xl z-40 border-r border-gray-100"
+    >
+      <!-- Logo Section -->
+      <div
+        class="p-6 border-b border-gray-200 bg-gradient-to-r from-indigo-50 to-purple-50"
+      >
+        <div class="flex items-center gap-3">
+          <div
+            class="rounded-xl w-12 h-12 bg-gradient-to-r from-indigo-600 to-purple-600 flex items-center justify-center text-white font-bold text-lg shadow-lg floating-animation"
+          >
+            🎓
+          </div>
+          <div>
+            <div class="text-lg font-bold gradient-text">CollegeConnect</div>
+            <div id="roleBadge" class="role-badge mt-1">Loading...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation Menu -->
+      <nav class="p-4 space-y-2 flex-1 overflow-y-auto">
+        <a
+          href="#"
+          id="dashboardNav"
+          class="nav-item active flex items-center gap-3 p-3 rounded-lg font-medium transition-all duration-200"
+        >
+          <span class="text-lg">📊</span>
+          <span>Dashboard</span>
+        </a>
+        <a
+          href="#"
+          id="timetableNav"
+          class="nav-item flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-medium transition-all duration-200"
+        >
+          <span class="text-lg">📅</span>
+          <span>Timetable</span>
+        </a>
+        <a
+          href="#"
+          id="notesNav"
+          class="nav-item flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-medium transition-all duration-200"
+        >
+          <span class="text-lg">📝</span>
+          <span>Notes & Files</span>
+        </a>
+        <a
+          href="#"
+          id="pollsNav"
+          class="nav-item flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-medium transition-all duration-200"
+        >
+          <span class="text-lg">📊</span>
+          <span>Live Polls</span>
+        </a>
+        <a
+          href="#"
+          id="eventsNav"
+          class="nav-item flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-medium transition-all duration-200"
+        >
+          <span class="text-lg">🎉</span>
+          <span>Events</span>
+        </a>
+        <a
+          href="#"
+          id="chatNav"
+          class="nav-item flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-medium transition-all duration-200"
+        >
+          <span class="text-lg">💬</span>
+          <span>Group Chat</span>
+        </a>
+
+        <!-- Admin Only Section -->
+        <div id="adminSection" class="hidden border-t pt-4 mt-4">
+          <div
+            class="text-xs text-gray-500 uppercase tracking-wide mb-2 px-3 font-semibold"
+          >
+            Admin Tools
+          </div>
+          <a
+            href="#"
+            id="usersNav"
+            class="nav-item flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-medium transition-all duration-200"
+          >
+            <span class="text-lg">👥</span>
+            <span>User Management</span>
+          </a>
+          <a
+            href="#"
+            id="analyticsNav"
+            class="nav-item flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-medium transition-all duration-200"
+          >
+            <span class="text-lg">📈</span>
+            <span>Analytics</span>
+          </a>
+        </div>
+
+        <!-- Faculty Only Section -->
+        <div id="facultySection" class="hidden border-t pt-4 mt-4">
+          <div
+            class="text-xs text-gray-500 uppercase tracking-wide mb-2 px-3 font-semibold"
+          >
+            Faculty Tools
+          </div>
+          <a
+            href="#"
+            id="gradesNav"
+            class="nav-item flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-medium transition-all duration-200"
+          >
+            <span class="text-lg">📊</span>
+            <span>Grade Management</span>
+          </a>
+          <a
+            href="#"
+            id="attendanceNav"
+            class="nav-item flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-medium transition-all duration-200"
+          >
+            <span class="text-lg">✅</span>
+            <span>Attendance</span>
+          </a>
+        </div>
+      </nav>
+
+      <!-- User Profile Section -->
+      <div
+        class="p-4 border-t border-gray-200 bg-gradient-to-r from-gray-50 to-gray-100"
+      >
+        <div class="relative">
+          <button
+            id="dashUserBtn"
+            class="w-full flex items-center gap-3 p-3 bg-white rounded-lg hover:bg-gray-50 transition-all duration-200 shadow-sm hover:shadow-md"
+          >
+            <div class="relative">
+              <div
+                id="userAvatar"
+                class="w-10 h-10 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full flex items-center justify-center text-white text-sm font-bold shadow-md"
+              >
+                👤
+              </div>
+              <div class="online-indicator"></div>
+            </div>
+            <div class="flex-1 text-left">
+              <div
+                class="text-sm font-semibold text-gray-800"
+                id="userDisplayName"
+              >
+                Loading...
+              </div>
+              <div class="text-xs text-gray-500">Click for options</div>
+            </div>
+            <svg
+              class="w-4 h-4 text-gray-400 transition-transform duration-200"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 9l-7 7-7-7"
+              ></path>
+            </svg>
+          </button>
+
+          <div
+            id="dashUserDropdown"
+            class="hidden absolute bottom-full left-0 right-0 mb-2 bg-white rounded-lg shadow-xl py-2 border border-gray-100 z-50"
+          >
+            <a
+              href="#"
+              id="myProfile"
+              class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 transition-colors"
+            >
+              <span>👤</span> My Profile
+            </a>
+            <a
+              href="#"
+              id="profileSettings"
+              class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 transition-colors"
+            >
+              <span>⚙️</span> Settings
+            </a>
+            <a
+              href="#"
+              id="changePassword"
+              class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 transition-colors"
+            >
+              <span>🔑</span> Change Password
+            </a>
+            <hr class="my-1 border-gray-100" />
+            <a
+              href="#"
+              id="dashLogout"
+              class="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+            >
+              <span>🚪</span> Sign Out
+            </a>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="md:ml-64 min-h-screen">
+      <!-- Header -->
+      <header
+        class="bg-white shadow-sm border-b border-gray-200 p-6 sticky top-0 z-30"
+      >
+        <div class="flex items-center justify-between">
+          <div>
+            <h1 class="text-2xl font-bold gradient-text" id="welcomeMessage">
+              Welcome to Your Dashboard 🎓
+            </h1>
+            <p class="text-gray-600 mt-1">
+              Manage your college activities in real-time
+            </p>
+          </div>
+
+          <div class="flex items-center gap-4">
+            <!-- Real-time Status -->
+            <div
+              class="flex items-center gap-2 px-3 py-1 bg-green-50 rounded-full border border-green-200"
+            >
+              <div class="w-2 h-2 bg-green-500 rounded-full pulse-dot"></div>
+              <span class="text-xs text-green-700 font-medium">Live</span>
+            </div>
+
+            <!-- Online Users Count -->
+            <div
+              class="flex items-center gap-2 px-3 py-1 bg-blue-50 rounded-full border border-blue-200"
+            >
+              <svg
+                class="w-3 h-3 text-blue-500"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z"
+                ></path>
+              </svg>
+              <span class="text-xs text-blue-700 font-medium" id="onlineCount"
+                >Loading...</span
+              >
+            </div>
+
+            <!-- Notifications -->
+            <button
+              id="notificationsBtn"
+              class="relative p-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-all duration-200 hover:scale-105"
+            >
+              <svg
+                class="w-5 h-5 text-gray-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                ></path>
+              </svg>
+              <div
+                id="notificationBadge"
+                class="hidden absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full text-xs text-white flex items-center justify-center notification-badge"
+              >
+                0
+              </div>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- Dashboard Content -->
+      <div class="p-6" id="mainContent">
+        <!-- Role-specific Dashboard Content will be loaded here -->
+      </div>
+    </main>
+
+    <!-- Profile Modal -->
+    <div
+      id="profileModal"
+      class="modal fixed inset-0 z-50 flex items-center justify-center"
+    >
+      <div class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+      <div class="bg-white rounded-2xl w-full max-w-md mx-4 z-10 shadow-2xl">
+        <div
+          class="flex items-center justify-between p-6 border-b border-gray-200"
+        >
+          <h2 class="text-xl font-bold gradient-text">👤 My Profile</h2>
+          <button
+            class="modal-close w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors"
+          >
+            ✕
+          </button>
+        </div>
+        <div class="p-6">
+          <div class="text-center mb-6">
+            <div
+              id="profileAvatarLarge"
+              class="w-20 h-20 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full flex items-center justify-center text-white text-2xl mx-auto mb-4"
+            >
+              👤
+            </div>
+            <div class="text-lg font-semibold" id="profileName">Loading...</div>
+            <div class="text-sm text-gray-500" id="profileEmail">
+              Loading...
+            </div>
+            <div id="profileRoleBadge" class="role-badge mt-2 inline-block">
+              Loading...
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2"
+                >Full Name</label
+              >
+              <div
+                class="text-sm text-gray-800 p-3 bg-gray-50 rounded-lg"
+                id="profileFullName"
+              >
+                Loading...
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2"
+                >Email</label
+              >
+              <div
+                class="text-sm text-gray-800 p-3 bg-gray-50 rounded-lg"
+                id="profileEmailField"
+              >
+                Loading...
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2"
+                >Role</label
+              >
+              <div
+                class="text-sm text-gray-800 p-3 bg-gray-50 rounded-lg"
+                id="profileRoleField"
+              >
+                Loading...
+              </div>
+            </div>
+            <div id="profileCollegeField" class="hidden">
+              <label class="block text-sm font-medium text-gray-700 mb-2"
+                >College</label
+              >
+              <div
+                class="text-sm text-gray-800 p-3 bg-gray-50 rounded-lg"
+                id="profileCollege"
+              >
+                Loading...
+              </div>
+            </div>
+            <div id="profileDepartmentField" class="hidden">
+              <label class="block text-sm font-medium text-gray-700 mb-2"
+                >Department</label
+              >
+              <div
+                class="text-sm text-gray-800 p-3 bg-gray-50 rounded-lg"
+                id="profileDepartment"
+              >
+                Loading...
+              </div>
+            </div>
+            <div id="profileYearField" class="hidden">
+              <label class="block text-sm font-medium text-gray-700 mb-2"
+                >Year</label
+              >
+              <div
+                class="text-sm text-gray-800 p-3 bg-gray-50 rounded-lg"
+                id="profileYear"
+              >
+                Loading...
+              </div>
+            </div>
+          </div>
+
+          <div class="flex gap-3 mt-6">
+            <button
+              class="modal-close flex-1 bg-gray-200 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-300 transition-colors"
+            >
+              Close
+            </button>
+            <button
+              id="editProfileBtn"
+              class="flex-1 bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 rounded-lg font-semibold hover:shadow-lg transition-all"
+            >
+              Edit Profile
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Change Password Modal -->
+    <div
+      id="changePasswordModal"
+      class="modal fixed inset-0 z-50 flex items-center justify-center"
+    >
+      <div class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+      <div class="bg-white rounded-2xl w-full max-w-md mx-4 z-10 shadow-2xl">
+        <div
+          class="flex items-center justify-between p-6 border-b border-gray-200"
+        >
+          <h2 class="text-xl font-bold gradient-text">🔑 Change Password</h2>
+          <button
+            class="modal-close w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors"
+          >
+            ✕
+          </button>
+        </div>
+        <div class="p-6">
+          <form id="changePasswordForm" class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2"
+                >Current Password</label
+              >
+              <input
+                type="password"
+                id="currentPassword"
+                class="w-full border-2 border-gray-200 rounded-lg p-3 focus:border-indigo-500 focus:outline-none transition-colors"
+                required
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2"
+                >New Password</label
+              >
+              <input
+                type="password"
+                id="newPassword"
+                class="w-full border-2 border-gray-200 rounded-lg p-3 focus:border-indigo-500 focus:outline-none transition-colors"
+                required
+              />
+              <div
+                id="passwordStrength"
+                class="mt-2 text-xs text-gray-500"
+              ></div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2"
+                >Confirm New Password</label
+              >
+              <input
+                type="password"
+                id="confirmPassword"
+                class="w-full border-2 border-gray-200 rounded-lg p-3 focus:border-indigo-500 focus:outline-none transition-colors"
+                required
+              />
+              <div id="passwordMatch" class="mt-1 text-xs"></div>
+            </div>
+            <div class="flex gap-3">
+              <button
+                type="button"
+                class="modal-close flex-1 bg-gray-200 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-300 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                class="flex-1 bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 rounded-lg font-semibold hover:shadow-lg transition-all"
+              >
+                Update Password
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notifications Modal -->
+    <div
+      id="notificationsModal"
+      class="modal fixed inset-0 z-50 flex items-center justify-center"
+    >
+      <div class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+      <div class="bg-white rounded-2xl w-full max-w-lg mx-4 z-10 shadow-2xl">
+        <div
+          class="flex items-center justify-between p-6 border-b border-gray-200"
+        >
+          <h2 class="text-xl font-bold gradient-text">🔔 Notifications</h2>
+          <div class="flex items-center gap-3">
+            <button
+              id="markAllReadBtn"
+              class="text-sm text-indigo-600 hover:text-indigo-800 transition-colors"
+            >
+              Mark all as read
+            </button>
+            <button
+              class="modal-close w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+        <div class="p-6 max-h-96 overflow-y-auto">
+          <div id="notificationsList" class="space-y-3">
+            <!-- Notifications will be populated here -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dynamic Modal Container -->
+    <div id="dynamicModalContainer"></div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="fixed top-4 right-4 z-60 space-y-2"></div>
+
+    <!-- Loading Overlay -->
+    <div
+      id="loadingOverlay"
+      class="fixed inset-0 bg-white/95 backdrop-blur-sm flex items-center justify-center z-50"
+    >
+      <div class="text-center">
+        <div
+          class="w-16 h-16 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-full flex items-center justify-center text-white text-2xl mx-auto mb-4 floating-animation"
+        >
+          🎓
+        </div>
+        <div class="text-lg font-semibold gradient-text">
+          Loading Dashboard...
+        </div>
+        <div class="text-sm text-gray-600 mb-4">
+          Setting up your personalized experience
+        </div>
+        <div class="w-48 h-2 bg-gray-200 rounded-full mx-auto overflow-hidden">
+          <div
+            class="h-full bg-gradient-to-r from-indigo-600 to-purple-600 rounded-full animate-pulse"
+          ></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Firebase and Main Scripts -->
+    <script type="module">
+      // Firebase Configuration
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+      import {
+        getAuth,
+        onAuthStateChanged,
+        signOut,
+        updatePassword,
+        reauthenticateWithCredential,
+        EmailAuthProvider,
+      } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+      import {
+        getFirestore,
+        doc,
+        onSnapshot,
+        collection,
+        query,
+        where,
+        orderBy,
+        addDoc,
+        updateDoc,
+        deleteDoc,
+        getDoc,
+        getDocs,
+        serverTimestamp,
+      } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+      // Firebase config
+      const firebaseConfig = {
+        apiKey: "AIzaSyD_URV0MAg7L6jho6Rcuwc47reakhyv7Hg",
+        authDomain: "collegeconnect-9ad89.firebaseapp.com",
+        projectId: "collegeconnect-9ad89",
+        storageBucket: "collegeconnect-9ad89.firebasestorage.app",
+        messagingSenderId: "348147420019",
+        appId: "1:348147420019:web:d1588e5f73bc7cb1ec9306",
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      const db = getFirestore(app);
+
+      // Global state
+      let currentUser = null;
+      let userRole = null;
+      let unsubscribeNotifications = null;
+      let unsubscribeOnlineUsers = null;
+
+      // Utility Functions
+      function showToast(message, type = "info") {
+        const toastContainer = document.getElementById("toastContainer");
+        const toast = document.createElement("div");
+
+        const colors = {
+          success: "bg-green-500",
+          error: "bg-red-500",
+          info: "bg-blue-500",
+          warning: "bg-yellow-500",
+        };
+
+        const icons = {
+          success: "✅",
+          error: "❌",
+          info: "ℹ️",
+          warning: "⚠️",
+        };
+
+        toast.className = `${colors[type]} text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-3 transform transition-all duration-300 translate-x-full`;
+        toast.innerHTML = `
+                <span class="text-lg">${icons[type]}</span>
+                <span class="font-medium">${message}</span>
+                <button class="ml-auto text-white hover:text-gray-200 transition-colors">✕</button>
+            `;
+
+        toastContainer.appendChild(toast);
+
+        // Animate in
+        setTimeout(() => {
+          toast.classList.remove("translate-x-full");
+        }, 100);
+
+        // Auto remove after 5 seconds
+        setTimeout(() => {
+          toast.classList.add("translate-x-full");
+          setTimeout(() => {
+            if (toastContainer.contains(toast)) {
+              toastContainer.removeChild(toast);
+            }
+          }, 300);
+        }, 5000);
+
+        // Manual close
+        toast.querySelector("button").onclick = () => {
+          toast.classList.add("translate-x-full");
+          setTimeout(() => {
+            if (toastContainer.contains(toast)) {
+              toastContainer.removeChild(toast);
+            }
+          }, 300);
+        };
+      }
+
+      function formatTimeAgo(timestamp) {
+        if (!timestamp) return "Just now";
+
+        const now = new Date();
+        const time = timestamp.toDate
+          ? timestamp.toDate()
+          : new Date(timestamp);
+        const diff = Math.floor((now - time) / 1000);
+
+        if (diff < 60) return "Just now";
+        if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+        if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+        if (diff < 604800) return `${Math.floor(diff / 86400)}d ago`;
+        return time.toLocaleDateString();
+      }
+
+      // Modal Management
+      function showModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+          modal.classList.add("show");
+        }
+      }
+
+      function hideModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+          modal.classList.remove("show");
+        }
+      }
+
+      // Dashboard Content Generators
+      function generateStudentDashboard() {
+        return `
+                <!-- Student Stats -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="stat-card bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:border-blue-200">
+                        <div class="flex items-center gap-4">
+                            <div class="p-3 bg-blue-50 rounded-lg">
+                                <div class="text-2xl">📅</div>
+                            </div>
+                            <div class="flex-1">
+                                <div class="text-2xl font-bold text-gray-800" id="todayClasses">5</div>
+                                <div class="text-sm text-gray-600">Today's Classes</div>
+                                <div class="w-full bg-gray-200 rounded-full h-1 mt-2">
+                                    <div class="bg-blue-500 h-1 rounded-full" style="width: 75%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:border-green-200">
+                        <div class="flex items-center gap-4">
+                            <div class="p-3 bg-green-50 rounded-lg">
+                                <div class="text-2xl">📝</div>
+                            </div>
+                            <div class="flex-1">
+                                <div class="text-2xl font-bold text-gray-800" id="assignmentsDue">3</div>
+                                <div class="text-sm text-gray-600">Assignments Due</div>
+                                <div class="w-full bg-gray-200 rounded-full h-1 mt-2">
+                                    <div class="bg-green-500 h-1 rounded-full" style="width: 60%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:border-purple-200">
+                        <div class="flex items-center gap-4">
+                            <div class="p-3 bg-purple-50 rounded-lg">
+                                <div class="text-2xl">📊</div>
+                            </div>
+                            <div class="flex-1">
+                                <div class="text-2xl font-bold text-gray-800" id="currentGPA">8.5</div>
+                                <div class="text-sm text-gray-600">Current GPA</div>
+                                <div class="w-full bg-gray-200 rounded-full h-1 mt-2">
+                                    <div class="bg-purple-500 h-1 rounded-full" style="width: 85%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:border-yellow-200">
+                        <div class="flex items-center gap-4">
+                            <div class="p-3 bg-yellow-50 rounded-lg">
+                                <div class="text-2xl">✅</div>
+                            </div>
+                            <div class="flex-1">
+                                <div class="text-2xl font-bold text-gray-800" id="attendance">92%</div>
+                                <div class="text-sm text-gray-600">Attendance</div>
+                                <div class="w-full bg-gray-200 rounded-full h-1 mt-2">
+                                    <div class="bg-yellow-500 h-1 rounded-full" style="width: 92%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="mb-8">
+                    <h2 class="text-xl font-bold gradient-text mb-6">⚡ Quick Actions</h2>
+                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="quick-action-btn bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:border-blue-200 text-center cursor-pointer" onclick="showTimetable()">
+                            <div class="text-3xl mb-3">📅</div>
+                            <div class="font-semibold text-gray-800 mb-1">View Timetable</div>
+                            <div class="text-sm text-gray-600">Check today's schedule</div>
+                        </div>
+                        <div class="quick-action-btn bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:border-green-200 text-center cursor-pointer" onclick="showNotes()">
+                            <div class="text-3xl mb-3">📚</div>
+                            <div class="font-semibold text-gray-800 mb-1">Study Notes</div>
+                            <div class="text-sm text-gray-600">Access study materials</div>
+                        </div>
+                        <div class="quick-action-btn bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:border-purple-200 text-center cursor-pointer" onclick="showPolls()">
+                            <div class="text-3xl mb-3">📊</div>
+                            <div class="font-semibold text-gray-800 mb-1">Live Polls</div>
+                            <div class="text-sm text-gray-600">Participate in polls</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Two Column Layout -->
+                <div class="grid lg:grid-cols-3 gap-8">
+                    <!-- Recent Activity -->
+                    <div class="lg:col-span-2">
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                            <div class="flex items-center justify-between mb-6">
+                                <h2 class="text-lg font-semibold gradient-text">📈 Recent Activity</h2>
+                                <button class="text-sm text-gray-500 hover:text-gray-700 transition-colors">View All</button>
+                            </div>
+                            <div id="recentActivity" class="space-y-3 max-h-96 overflow-y-auto">
+                                ${generateRecentActivity()}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Sidebar -->
+                    <div class="space-y-6">
+                        <!-- Today's Schedule -->
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                            <h3 class="text-lg font-semibold gradient-text mb-4">📅 Today's Schedule</h3>
+                            <div id="todaySchedule" class="space-y-3">
+                                ${generateTodaySchedule()}
+                            </div>
+                        </div>
+
+                        <!-- Quick Stats -->
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                            <h3 class="text-lg font-semibold gradient-text mb-4">📊 Quick Stats</h3>
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-600">Login Streak</span>
+                                    <span class="font-bold text-indigo-600" id="loginStreak">7 days</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-600">Assignments Completed</span>
+                                    <span class="font-bold text-green-600" id="assignmentsCompleted">12/15</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-600">Study Hours</span>
+                                    <span class="font-bold text-purple-600" id="studyHours">45h</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+      }
+
+      function generateFacultyDashboard() {
+        return `
+                <!-- Faculty Stats -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="stat-card bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:border-blue-200">
+                        <div class="flex items-center gap-4">
+                            <div class="p-3 bg-blue-50 rounded-lg">
+                                <div class="text-2xl">👥</div>
+                            </div>
+                            <div class="flex-1">
+                                <div class="text-2xl font-bold text-gray-800" id="totalStudents">245</div>
+                                <div class="text-sm text-gray-600">Total Students</div>
+                                <div class="w-full bg-gray-200 rounded-full h-1 mt-2">
+                                    <div class="bg-blue-500 h-1 rounded-full" style="width: 75%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:border-green-200">
+                        <div class="flex items-center gap-4">
+                            <div class="p-3 bg-green-50 rounded-lg">
+                                <div class="text-2xl">📚</div>
+                            </div>
+                            <div class="flex-1">
+                                <div class="text-2xl font-bold text-gray-800" id="totalCourses">8</div>
+                                <div class="text-sm text-gray-600">Courses Teaching</div>
+                                <div class="w-full bg-gray-200 rounded-full h-1 mt-2">
+                                    <div class="bg-green-500 h-1 rounded-full" style="width: 80%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:border-purple-200">
+                        <div class="flex items-center gap-4">
+                            <div class="p-3 bg-purple-50 rounded-lg">
+                                <div class="text-2xl">📝</div>
+                            </div>
+                            <div class="flex-1">
+                                <div class="text-2xl font-bold text-gray-800" id="pendingGrading">23</div>
+                                <div class="text-sm text-gray-600">Pending Grading</div>
+                                <div class="w-full bg-gray-200 rounded-full h-1 mt-2">
+                                    <div class="bg-purple-500 h-1 rounded-full" style="width: 45%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:border-yellow-200">
+                        <div class="flex items-center gap-4">
+                            <div class="p-3 bg-yellow-50 rounded-lg">
+                                <div class="text-2xl">✅</div>
+                            </div>
+                            <div class="flex-1">
+                                <div class="text-2xl font-bold text-gray-800" id="avgAttendance">87%</div>
+                                <div class="text-sm text-gray-600">Avg Attendance</div>
+                                <div class="w-full bg-gray-200 rounded-full h-1 mt-2">
+                                    <div class="bg-yellow-500 h-1 rounded-full" style="width: 87%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="mb-8">
+                    <h2 class="text-xl font-bold gradient-text mb-6">⚡ Quick Actions</h2>
+                    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div class="quick-action-btn bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:border-blue-200 text-center cursor-pointer" onclick="showTimetable()">
+                            <div class="text-3xl mb-3">📅</div>
+                            <div class="font-semibold text-gray-800 mb-1">Manage Timetable</div>
+                            <div class="text-sm text-gray-600">Update class schedule</div>
+                        </div>
+                        <div class="quick-action-btn bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:border-green-200 text-center cursor-pointer" onclick="showNotes()">
+                            <div class="text-3xl mb-3">📝</div>
+                            <div class="font-semibold text-gray-800 mb-1">Upload Notes</div>
+                            <div class="text-sm text-gray-600">Share study materials</div>
+                        </div>
+                        <div class="quick-action-btn bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:border-purple-200 text-center cursor-pointer" onclick="showPolls()">
+                            <div class="text-3xl mb-3">📊</div>
+                            <div class="font-semibold text-gray-800 mb-1">Create Poll</div>
+                            <div class="text-sm text-gray-600">Engage with students</div>
+                        </div>
+                        <div class="quick-action-btn bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:border-red-200 text-center cursor-pointer" onclick="showGrades()">
+                            <div class="text-3xl mb-3">🎓</div>
+                            <div class="font-semibold text-gray-800 mb-1">Grade Students</div>
+                            <div class="text-sm text-gray-600">Manage assessments</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Faculty Specific Content -->
+                <div class="grid lg:grid-cols-3 gap-8">
+                    <!-- Course Management -->
+                    <div class="lg:col-span-2">
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                            <div class="flex items-center justify-between mb-6">
+                                <h2 class="text-lg font-semibold gradient-text">📚 Course Management</h2>
+                                <button class="text-sm text-indigo-600 hover:text-indigo-800 transition-colors">Add Course</button>
+                            </div>
+                            <div id="courseList" class="space-y-4">
+                                ${generateCourseList()}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Sidebar -->
+                    <div class="space-y-6">
+                        <!-- Upcoming Classes -->
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                            <h3 class="text-lg font-semibold gradient-text mb-4">🕐 Upcoming Classes</h3>
+                            <div id="upcomingClasses" class="space-y-3">
+                                ${generateUpcomingClasses()}
+                            </div>
+                        </div>
+
+                        <!-- Student Performance -->
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                            <h3 class="text-lg font-semibold gradient-text mb-4">📈 Performance Overview</h3>
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-600">Top Performers</span>
+                                    <span class="font-bold text-green-600">15 students</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-600">Need Attention</span>
+                                    <span class="font-bold text-red-600">3 students</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-600">Class Average</span>
+                                    <span class="font-bold text-blue-600">78.5%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+      }
+
+      function generateAdminDashboard() {
+        return `
+                <!-- Admin Stats -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="stat-card bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:border-blue-200">
+                        <div class="flex items-center gap-4">
+                            <div class="p-3 bg-blue-50 rounded-lg">
+                                <div class="text-2xl">👥</div>
+                            </div>
+                            <div class="flex-1">
+                                <div class="text-2xl font-bold text-gray-800" id="totalUsers">1,245</div>
+                                <div class="text-sm text-gray-600">Total Users</div>
+                                <div class="w-full bg-gray-200 rounded-full h-1 mt-2">
+                                    <div class="bg-blue-500 h-1 rounded-full" style="width: 85%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:border-green-200">
+                        <div class="flex items-center gap-4">
+                            <div class="p-3 bg-green-50 rounded-lg">
+                                <div class="text-2xl">🏫</div>
+                            </div>
+                            <div class="flex-1">
+                                <div class="text-2xl font-bold text-gray-800" id="totalColleges">12</div>
+                                <div class="text-sm text-gray-600">Active Colleges</div>
+                                <div class="w-full bg-gray-200 rounded-full h-1 mt-2">
+                                    <div class="bg-green-500 h-1 rounded-full" style="width: 70%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:border-purple-200">
+                        <div class="flex items-center gap-4">
+                            <div class="p-3 bg-purple-50 rounded-lg">
+                                <div class="text-2xl">📊</div>
+                            </div>
+                            <div class="flex-1">
+                                <div class="text-2xl font-bold text-gray-800" id="activePolls">47</div>
+                                <div class="text-sm text-gray-600">Active Polls</div>
+                                <div class="w-full bg-gray-200 rounded-full h-1 mt-2">
+                                    <div class="bg-purple-500 h-1 rounded-full" style="width: 60%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:border-yellow-200">
+                        <div class="flex items-center gap-4">
+                            <div class="p-3 bg-yellow-50 rounded-lg">
+                                <div class="text-2xl">⚡</div>
+                            </div>
+                            <div class="flex-1">
+                                <div class="text-2xl font-bold text-gray-800" id="systemUptime">99.9%</div>
+                                <div class="text-sm text-gray-600">System Uptime</div>
+                                <div class="w-full bg-gray-200 rounded-full h-1 mt-2">
+                                    <div class="bg-yellow-500 h-1 rounded-full" style="width: 99%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="mb-8">
+                    <h2 class="text-xl font-bold gradient-text mb-6">⚡ Admin Controls</h2>
+                    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div class="quick-action-btn bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:border-blue-200 text-center cursor-pointer" onclick="showUsers()">
+                            <div class="text-3xl mb-3">👥</div>
+                            <div class="font-semibold text-gray-800 mb-1">Manage Users</div>
+                            <div class="text-sm text-gray-600">User administration</div>
+                        </div>
+                        <div class="quick-action-btn bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:border-green-200 text-center cursor-pointer" onclick="showAnalytics()">
+                            <div class="text-3xl mb-3">📈</div>
+                            <div class="font-semibold text-gray-800 mb-1">Analytics</div>
+                            <div class="text-sm text-gray-600">System insights</div>
+                        </div>
+                        <div class="quick-action-btn bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:border-purple-200 text-center cursor-pointer" onclick="showSystemSettings()">
+                            <div class="text-3xl mb-3">⚙️</div>
+                            <div class="font-semibold text-gray-800 mb-1">System Settings</div>
+                            <div class="text-sm text-gray-600">Configure system</div>
+                        </div>
+                        <div class="quick-action-btn bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:border-red-200 text-center cursor-pointer" onclick="showReports()">
+                            <div class="text-3xl mb-3">📋</div>
+                            <div class="font-semibold text-gray-800 mb-1">Reports</div>
+                            <div class="text-sm text-gray-600">Generate reports</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin Dashboard Content -->
+                <div class="grid lg:grid-cols-3 gap-8">
+                    <!-- System Overview -->
+                    <div class="lg:col-span-2">
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                            <div class="flex items-center justify-between mb-6">
+                                <h2 class="text-lg font-semibold gradient-text">🖥️ System Overview</h2>
+                                <button class="text-sm text-indigo-600 hover:text-indigo-800 transition-colors">Refresh</button>
+                            </div>
+                            <div id="systemMetrics" class="space-y-4">
+                                ${generateSystemMetrics()}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Sidebar -->
+                    <div class="space-y-6">
+                        <!-- Recent Activities -->
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                            <h3 class="text-lg font-semibold gradient-text mb-4">🕐 Recent Activities</h3>
+                            <div id="adminActivities" class="space-y-3">
+                                ${generateAdminActivities()}
+                            </div>
+                        </div>
+
+                        <!-- System Health -->
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                            <h3 class="text-lg font-semibold gradient-text mb-4">💚 System Health</h3>
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-600">Database</span>
+                                    <span class="font-bold text-green-600">Healthy</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-600">Server Load</span>
+                                    <span class="font-bold text-blue-600">45%</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-600">Storage</span>
+                                    <span class="font-bold text-yellow-600">78%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+      }
+
+      // Helper content generators
+      function generateRecentActivity() {
+        const activities = [
+          {
+            type: "assignment",
+            title: "Mathematics Assignment 3 submitted",
+            time: "2 hours ago",
+            icon: "📝",
+          },
+          {
+            type: "poll",
+            title: "Participated in Physics poll",
+            time: "4 hours ago",
+            icon: "📊",
+          },
+          {
+            type: "note",
+            title: "Downloaded Chemistry notes",
+            time: "1 day ago",
+            icon: "📚",
+          },
+          {
+            type: "class",
+            title: "Attended Computer Science lecture",
+            time: "2 days ago",
+            icon: "💻",
+          },
+        ];
+
+        return activities
+          .map(
+            (activity) => `
+                <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                    <div class="text-2xl">${activity.icon}</div>
+                    <div class="flex-1">
+                        <div class="font-medium text-gray-800">${activity.title}</div>
+                        <div class="text-sm text-gray-500">${activity.time}</div>
+                    </div>
+                </div>
+            `
+          )
+          .join("");
+      }
+
+      function generateTodaySchedule() {
+        const schedule = [
+          { time: "9:00 AM", subject: "Mathematics", room: "Room 101" },
+          { time: "11:00 AM", subject: "Physics", room: "Lab A" },
+          { time: "2:00 PM", subject: "Chemistry", room: "Room 205" },
+          { time: "4:00 PM", subject: "Computer Science", room: "Lab B" },
+        ];
+
+        return schedule
+          .map(
+            (item) => `
+                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div>
+                        <div class="font-medium text-gray-800">${item.subject}</div>
+                        <div class="text-sm text-gray-500">${item.room}</div>
+                    </div>
+                    <div class="text-sm font-medium text-indigo-600">${item.time}</div>
+                </div>
+            `
+          )
+          .join("");
+      }
+
+      function generateCourseList() {
+        const courses = [
+          { name: "Advanced Mathematics", students: 45, progress: 75 },
+          { name: "Quantum Physics", students: 32, progress: 60 },
+          { name: "Organic Chemistry", students: 38, progress: 85 },
+          { name: "Data Structures", students: 52, progress: 70 },
+        ];
+
+        return courses
+          .map(
+            (course) => `
+                <div class="p-4 border border-gray-200 rounded-lg hover:border-indigo-300 transition-colors">
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="font-semibold text-gray-800">${course.name}</h4>
+                        <span class="text-sm text-gray-500">${course.students} students</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2 mb-2">
+                        <div class="bg-indigo-500 h-2 rounded-full" style="width: ${course.progress}%"></div>
+                    </div>
+                    <div class="text-sm text-gray-600">Progress: ${course.progress}%</div>
+                </div>
+            `
+          )
+          .join("");
+      }
+
+      function generateUpcomingClasses() {
+        const classes = [
+          { subject: "Mathematics", time: "10:00 AM", room: "Room 101" },
+          { subject: "Physics", time: "2:00 PM", room: "Lab A" },
+          { subject: "Chemistry", time: "4:00 PM", room: "Room 205" },
+        ];
+
+        return classes
+          .map(
+            (cls) => `
+                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div>
+                        <div class="font-medium text-gray-800">${cls.subject}</div>
+                        <div class="text-sm text-gray-500">${cls.room}</div>
+                    </div>
+                    <div class="text-sm font-medium text-indigo-600">${cls.time}</div>
+                </div>
+            `
+          )
+          .join("");
+      }
+
+      function generateSystemMetrics() {
+        const metrics = [
+          {
+            label: "Active Users",
+            value: "1,234",
+            trend: "+5.2%",
+            color: "text-green-600",
+          },
+          {
+            label: "Daily Logins",
+            value: "456",
+            trend: "+12.3%",
+            color: "text-green-600",
+          },
+          {
+            label: "File Uploads",
+            value: "89",
+            trend: "-2.1%",
+            color: "text-red-600",
+          },
+          {
+            label: "Poll Responses",
+            value: "567",
+            trend: "+8.7%",
+            color: "text-green-600",
+          },
+        ];
+
+        return metrics
+          .map(
+            (metric) => `
+                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                    <div>
+                        <div class="font-semibold text-gray-800">${metric.label}</div>
+                        <div class="text-2xl font-bold text-gray-900">${metric.value}</div>
+                    </div>
+                    <div class="text-sm font-medium ${metric.color}">${metric.trend}</div>
+                </div>
+            `
+          )
+          .join("");
+      }
+
+      function generateAdminActivities() {
+        const activities = [
+          {
+            action: "User created",
+            details: "New student registered",
+            time: "10 min ago",
+          },
+          {
+            action: "Poll created",
+            details: "Math quiz poll",
+            time: "1 hour ago",
+          },
+          {
+            action: "System backup",
+            details: "Daily backup completed",
+            time: "2 hours ago",
+          },
+          {
+            action: "User updated",
+            details: "Faculty role assigned",
+            time: "3 hours ago",
+          },
+        ];
+
+        return activities
+          .map(
+            (activity) => `
+                <div class="p-3 bg-gray-50 rounded-lg">
+                    <div class="font-medium text-gray-800 text-sm">${activity.action}</div>
+                    <div class="text-sm text-gray-600">${activity.details}</div>
+                    <div class="text-xs text-gray-500 mt-1">${activity.time}</div>
+                </div>
+            `
+          )
+          .join("");
+      }
+
+      // Feature Modules
+      function showTimetable() {
+        const modalContainer = document.getElementById("dynamicModalContainer");
+        modalContainer.innerHTML = `
+                <div id="timetableModal" class="modal show fixed inset-0 z-50 flex items-center justify-center">
+                    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+                    <div class="bg-white rounded-2xl w-full max-w-6xl mx-4 z-10 shadow-2xl max-h-[90vh] overflow-y-auto">
+                        <div class="flex items-center justify-between p-6 border-b border-gray-200">
+                            <h2 class="text-xl font-bold gradient-text">📅 Timetable Management</h2>
+                            <button onclick="closeModal('timetableModal')" class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors">
+                                ✕
+                            </button>
+                        </div>
+                        <div class="p-6">
+                            <div class="grid md:grid-cols-7 gap-4">
+                                ${generateTimetableGrid()}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+      }
+
+      function generateTimetableGrid() {
+        const days = [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday",
+        ];
+        const timeSlots = [
+          "9:00 AM",
+          "10:00 AM",
+          "11:00 AM",
+          "12:00 PM",
+          "1:00 PM",
+          "2:00 PM",
+          "3:00 PM",
+          "4:00 PM",
+          "5:00 PM",
+        ];
+
+        let html = "";
+        days.forEach((day) => {
+          html += `
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <h3 class="font-bold text-center mb-4 text-gray-800">${day}</h3>
+                        <div class="space-y-2">
+                            ${timeSlots
+                              .map(
+                                (time) => `
+                                <div class="bg-white rounded p-2 text-xs border hover:border-indigo-300 cursor-pointer transition-colors">
+                                    <div class="font-medium text-gray-600">${time}</div>
+                                    <div class="text-gray-500">Available</div>
+                                </div>
+                            `
+                              )
+                              .join("")}
+                        </div>
+                    </div>
+                `;
+        });
+        return html;
+      }
+
+      function showNotes() {
+        const modalContainer = document.getElementById("dynamicModalContainer");
+        modalContainer.innerHTML = `
+                <div id="notesModal" class="modal show fixed inset-0 z-50 flex items-center justify-center">
+                    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+                    <div class="bg-white rounded-2xl w-full max-w-4xl mx-4 z-10 shadow-2xl max-h-[90vh] overflow-y-auto">
+                        <div class="flex items-center justify-between p-6 border-b border-gray-200">
+                            <h2 class="text-xl font-bold gradient-text">📝 Notes & Files</h2>
+                            <div class="flex items-center gap-3">
+                                ${
+                                  userRole !== "student"
+                                    ? `
+                                    <button onclick="uploadNote()" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors text-sm">
+                                        📤 Upload Note
+                                    </button>
+                                `
+                                    : ""
+                                }
+                                <button onclick="closeModal('notesModal')" class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors">
+                                    ✕
+                                </button>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <div class="mb-6">
+                                <div class="flex items-center gap-4 mb-4">
+                                    <input type="text" placeholder="Search notes..." class="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:border-indigo-500 focus:outline-none">
+                                    <select class="border border-gray-300 rounded-lg px-4 py-2 focus:border-indigo-500 focus:outline-none">
+                                        <option>All Subjects</option>
+                                        <option>Mathematics</option>
+                                        <option>Physics</option>
+                                        <option>Chemistry</option>
+                                        <option>Computer Science</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div id="notesList" class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                ${generateSampleNotes()}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+      }
+
+      function generateSampleNotes() {
+        const sampleNotes = [
+          {
+            title: "Calculus - Integration Techniques",
+            subject: "Mathematics",
+            author: "Dr. Smith",
+            date: "2024-01-15",
+            type: "PDF",
+          },
+          {
+            title: "Quantum Physics Fundamentals",
+            subject: "Physics",
+            author: "Prof. Johnson",
+            date: "2024-01-14",
+            type: "PDF",
+          },
+          {
+            title: "Organic Chemistry Reactions",
+            subject: "Chemistry",
+            author: "Dr. Brown",
+            date: "2024-01-13",
+            type: "DOC",
+          },
+          {
+            title: "Data Structures & Algorithms",
+            subject: "Computer Science",
+            author: "Prof. Davis",
+            date: "2024-01-12",
+            type: "PDF",
+          },
+          {
+            title: "Linear Algebra Notes",
+            subject: "Mathematics",
+            author: "Dr. Wilson",
+            date: "2024-01-11",
+            type: "PDF",
+          },
+          {
+            title: "Thermodynamics Concepts",
+            subject: "Physics",
+            author: "Prof. Miller",
+            date: "2024-01-10",
+            type: "DOC",
+          },
+        ];
+
+        return sampleNotes
+          .map(
+            (note) => `
+                <div class="bg-white border border-gray-200 rounded-lg p-4 hover:border-indigo-300 transition-colors cursor-pointer">
+                    <div class="flex items-start justify-between mb-3">
+                        <div class="text-2xl">${
+                          note.type === "PDF" ? "📄" : "📝"
+                        }</div>
+                        <span class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">${
+                          note.type
+                        }</span>
+                    </div>
+                    <h3 class="font-semibold text-gray-800 mb-2 line-clamp-2">${
+                      note.title
+                    }</h3>
+                    <p class="text-sm text-gray-600 mb-2">${note.subject}</p>
+                    <div class="flex items-center justify-between text-xs text-gray-500">
+                        <span>by ${note.author}</span>
+                        <span>${note.date}</span>
+                    </div>
+                    <div class="flex gap-2 mt-3">
+                        <button class="flex-1 bg-indigo-50 text-indigo-600 py-1 px-2 rounded text-xs hover:bg-indigo-100 transition-colors">
+                            Download
+                        </button>
+                        <button class="flex-1 bg-gray-50 text-gray-600 py-1 px-2 rounded text-xs hover:bg-gray-100 transition-colors">
+                            Preview
+                        </button>
+                    </div>
+                </div>
+            `
+          )
+          .join("");
+      }
+
+      function showPolls() {
+        const modalContainer = document.getElementById("dynamicModalContainer");
+        modalContainer.innerHTML = `
+                <div id="pollsModal" class="modal show fixed inset-0 z-50 flex items-center justify-center">
+                    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+                    <div class="bg-white rounded-2xl w-full max-w-4xl mx-4 z-10 shadow-2xl max-h-[90vh] overflow-y-auto">
+                        <div class="flex items-center justify-between p-6 border-b border-gray-200">
+                            <h2 class="text-xl font-bold gradient-text">📊 Live Polls</h2>
+                            <div class="flex items-center gap-3">
+                                ${
+                                  userRole !== "student"
+                                    ? `
+                                    <button onclick="createPoll()" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors text-sm">
+                                        ➕ Create Poll
+                                    </button>
+                                `
+                                    : ""
+                                }
+                                <button onclick="closeModal('pollsModal')" class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors">
+                                    ✕
+                                </button>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <div id="pollsList" class="space-y-6">
+                                ${generateSamplePolls()}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+      }
+
+      function generateSamplePolls() {
+        const samplePolls = [
+          {
+            id: 1,
+            question: "Which topic should we cover next in Mathematics?",
+            options: [
+              "Differential Equations",
+              "Statistics",
+              "Linear Programming",
+              "Probability",
+            ],
+            votes: [25, 18, 12, 30],
+            totalVotes: 85,
+            timeLeft: "2h 15m",
+            author: "Dr. Smith",
+          },
+          {
+            id: 2,
+            question: "Rate the difficulty of the last Physics assignment",
+            options: ["Too Easy", "Just Right", "Challenging", "Too Hard"],
+            votes: [5, 32, 28, 8],
+            totalVotes: 73,
+            timeLeft: "1h 30m",
+            author: "Prof. Johnson",
+          },
+        ];
+
+        return samplePolls
+          .map((poll) => {
+            const maxVotes = Math.max(...poll.votes);
+            return `
+                    <div class="bg-white border border-gray-200 rounded-lg p-6">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="flex-1">
+                                <h3 class="font-semibold text-gray-800 mb-2">${
+                                  poll.question
+                                }</h3>
+                                <div class="flex items-center gap-4 text-sm text-gray-500">
+                                    <span>by ${poll.author}</span>
+                                    <span>⏰ ${poll.timeLeft} left</span>
+                                    <span>👥 ${poll.totalVotes} votes</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2 px-3 py-1 bg-green-50 rounded-full">
+                                <div class="w-2 h-2 bg-green-500 rounded-full pulse-dot"></div>
+                                <span class="text-xs text-green-700 font-medium">Live</span>
+                            </div>
+                        </div>
+                        <div class="space-y-3">
+                            ${poll.options
+                              .map((option, index) => {
+                                const percentage =
+                                  poll.totalVotes > 0
+                                    ? Math.round(
+                                        (poll.votes[index] / poll.totalVotes) *
+                                          100
+                                      )
+                                    : 0;
+                                const isHighest =
+                                  poll.votes[index] === maxVotes;
+                                return `
+                                    <div class="cursor-pointer group" onclick="votePoll(${
+                                      poll.id
+                                    }, ${index})">
+                                        <div class="flex items-center justify-between mb-1">
+                                            <span class="text-sm font-medium text-gray-700">${option}</span>
+                                            <span class="text-sm text-gray-500">${
+                                              poll.votes[index]
+                                            } votes (${percentage}%)</span>
+                                        </div>
+                                        <div class="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+                                            <div class="h-full ${
+                                              isHighest
+                                                ? "bg-indigo-500"
+                                                : "bg-gray-400"
+                                            } rounded-full transition-all duration-500 group-hover:bg-indigo-600" 
+                                                 style="width: ${percentage}%"></div>
+                                        </div>
+                                    </div>
+                                `;
+                              })
+                              .join("")}
+                        </div>
+                    </div>
+                `;
+          })
+          .join("");
+      }
+
+      // User Profile and Authentication Functions
+      async function loadUserProfile() {
+        try {
+          if (!currentUser) return;
+
+          const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+          if (userDoc.exists()) {
+            const userData = userDoc.data();
+
+            // Update UI with user data
+            document.getElementById("userDisplayName").textContent =
+              userData.fullName || "User";
+            document.getElementById(
+              "welcomeMessage"
+            ).textContent = `Welcome back, ${
+              userData.fullName?.split(" ")[0] || "User"
+            }! 🎓`;
+
+            // Set role badge
+            const roleBadge = document.getElementById("roleBadge");
+            roleBadge.textContent = userData.role || "student";
+            roleBadge.className = `role-badge ${userData.role || "student"}`;
+
+            // Update avatar
+            const userAvatar = document.getElementById("userAvatar");
+            const profileAvatarLarge =
+              document.getElementById("profileAvatarLarge");
+            const initials = userData.fullName
+              ? userData.fullName
+                  .split(" ")
+                  .map((n) => n[0])
+                  .join("")
+                  .toUpperCase()
+              : "U";
+
+            userAvatar.textContent = initials;
+            profileAvatarLarge.textContent = initials;
+
+            // Set user role globally
+            userRole = userData.role || "student";
+
+            // Show/hide role-specific sections
+            if (userRole === "admin") {
+              document
+                .getElementById("adminSection")
+                .classList.remove("hidden");
+              document.getElementById("facultySection").classList.add("hidden");
+            } else if (userRole === "faculty") {
+              document
+                .getElementById("facultySection")
+                .classList.remove("hidden");
+              document.getElementById("adminSection").classList.add("hidden");
+            } else {
+              document.getElementById("adminSection").classList.add("hidden");
+              document.getElementById("facultySection").classList.add("hidden");
+            }
+
+            // Load dashboard content based on role
+            loadDashboardContent();
+
+            // Update profile modal
+            document.getElementById("profileName").textContent =
+              userData.fullName || "User";
+            document.getElementById("profileEmail").textContent =
+              userData.email || currentUser.email;
+            document.getElementById("profileFullName").textContent =
+              userData.fullName || "Not provided";
+            document.getElementById("profileEmailField").textContent =
+              userData.email || currentUser.email;
+            document.getElementById("profileRoleField").textContent =
+              (userData.role || "student").charAt(0).toUpperCase() +
+              (userData.role || "student").slice(1);
+
+            const profileRoleBadge =
+              document.getElementById("profileRoleBadge");
+            profileRoleBadge.textContent = userData.role || "student";
+            profileRoleBadge.className = `role-badge ${
+              userData.role || "student"
+            } mt-2 inline-block`;
+
+            // Show additional profile fields based on role
+            if (userData.college) {
+              document
+                .getElementById("profileCollegeField")
+                .classList.remove("hidden");
+              document.getElementById("profileCollege").textContent =
+                userData.college;
+            }
+            if (userData.department) {
+              document
+                .getElementById("profileDepartmentField")
+                .classList.remove("hidden");
+              document.getElementById("profileDepartment").textContent =
+                userData.department;
+            }
+            if (userData.year && userData.role === "student") {
+              document
+                .getElementById("profileYearField")
+                .classList.remove("hidden");
+              document.getElementById("profileYear").textContent =
+                userData.year;
+            }
+          }
+        } catch (error) {
+          console.error("Error loading user profile:", error);
+          showToast("Error loading profile", "error");
+        }
+      }
+
+      function loadDashboardContent() {
+        const mainContent = document.getElementById("mainContent");
+
+        switch (userRole) {
+          case "admin":
+            mainContent.innerHTML = generateAdminDashboard();
+            break;
+          case "faculty":
+            mainContent.innerHTML = generateFacultyDashboard();
+            break;
+          default:
+            mainContent.innerHTML = generateStudentDashboard();
+        }
+
+        // Start real-time updates
+        startRealtimeUpdates();
+      }
+
+      async function startRealtimeUpdates() {
+        // Update online users count
+        document.getElementById("onlineCount").textContent =
+          Math.floor(Math.random() * 50) + 20 + " online";
+
+        // Load notifications
+        loadNotifications();
+
+        // Set up periodic updates
+        setInterval(() => {
+          document.getElementById("onlineCount").textContent =
+            Math.floor(Math.random() * 50) + 20 + " online";
+        }, 30000); // Update every 30 seconds
+      }
+
+      async function loadNotifications() {
+        try {
+          // Simulate loading notifications
+          const notifications = [
+            {
+              id: 1,
+              title: "New assignment posted",
+              message: "Mathematics Assignment 4 is now available",
+              time: new Date(Date.now() - 3600000),
+              read: false,
+            },
+            {
+              id: 2,
+              title: "Poll created",
+              message: "Physics difficulty poll is live",
+              time: new Date(Date.now() - 7200000),
+              read: false,
+            },
+            {
+              id: 3,
+              title: "Grade updated",
+              message: "Your Chemistry quiz grade is available",
+              time: new Date(Date.now() - 86400000),
+              read: true,
+            },
+          ];
+
+          updateNotificationBadge(notifications.filter((n) => !n.read).length);
+          updateNotificationsList(notifications);
+        } catch (error) {
+          console.error("Error loading notifications:", error);
+        }
+      }
+
+      function updateNotificationBadge(count) {
+        const badge = document.getElementById("notificationBadge");
+        if (count > 0) {
+          badge.textContent = count;
+          badge.classList.remove("hidden");
+        } else {
+          badge.classList.add("hidden");
+        }
+      }
+
+      function updateNotificationsList(notifications) {
+        const notificationsList = document.getElementById("notificationsList");
+
+        if (notifications.length === 0) {
+          notificationsList.innerHTML = `
+                    <div class="text-center py-8">
+                        <div class="text-4xl mb-2">📭</div>
+                        <div class="text-gray-500">No notifications yet</div>
+                    </div>
+                `;
+          return;
+        }
+
+        notificationsList.innerHTML = notifications
+          .map(
+            (notification) => `
+                <div class="p-3 rounded-lg border ${
+                  notification.read
+                    ? "bg-gray-50 border-gray-200"
+                    : "bg-blue-50 border-blue-200"
+                } hover:shadow-sm transition-all cursor-pointer">
+                    <div class="flex items-start gap-3">
+                        <div class="text-lg">${
+                          notification.read ? "📨" : "📩"
+                        }</div>
+                        <div class="flex-1">
+                            <div class="font-medium text-gray-800 ${
+                              notification.read ? "" : "font-semibold"
+                            }">${notification.title}</div>
+                            <div class="text-sm text-gray-600 mt-1">${
+                              notification.message
+                            }</div>
+                            <div class="text-xs text-gray-500 mt-2">${formatTimeAgo(
+                              notification.time
+                            )}</div>
+                        </div>
+                        ${
+                          !notification.read
+                            ? '<div class="w-2 h-2 bg-blue-500 rounded-full"></div>'
+                            : ""
+                        }
+                    </div>
+                </div>
+            `
+          )
+          .join("");
+      }
+
+      // Event Handlers
+      async function handleLogout() {
+        try {
+          await signOut(auth);
+          window.location.href = "index.html";
+        } catch (error) {
+          console.error("Logout error:", error);
+          showToast("Error signing out", "error");
+        }
+      }
+
+      async function handleChangePassword(event) {
+        event.preventDefault();
+
+        const currentPassword =
+          document.getElementById("currentPassword").value;
+        const newPassword = document.getElementById("newPassword").value;
+        const confirmPassword =
+          document.getElementById("confirmPassword").value;
+
+        if (newPassword !== confirmPassword) {
+          showToast("Passwords do not match", "error");
+          return;
+        }
+
+        if (newPassword.length < 6) {
+          showToast("Password must be at least 6 characters", "error");
+          return;
+        }
+
+        try {
+          const credential = EmailAuthProvider.credential(
+            currentUser.email,
+            currentPassword
+          );
+          await reauthenticateWithCredential(currentUser, credential);
+          await updatePassword(currentUser, newPassword);
+
+          showToast("Password updated successfully", "success");
+          hideModal("changePasswordModal");
+          document.getElementById("changePasswordForm").reset();
+        } catch (error) {
+          console.error("Password change error:", error);
+          if (error.code === "auth/wrong-password") {
+            showToast("Current password is incorrect", "error");
+          } else {
+            showToast("Error updating password", "error");
+          }
+        }
+      }
+
+      // Helper Functions
+      function closeModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+          modal.classList.remove("show");
+          setTimeout(() => {
+            const container = document.getElementById("dynamicModalContainer");
+            if (container) {
+              container.innerHTML = "";
+            }
+          }, 300);
+        }
+      }
+
+      function votePoll(pollId, optionIndex) {
+        showToast("Vote recorded successfully!", "success");
+      }
+
+      function uploadNote() {
+        showToast(
+          "Upload feature will be implemented with file handling",
+          "info"
+        );
+      }
+
+      function createPoll() {
+        showToast("Poll creation feature will be implemented", "info");
+      }
+
+      function showUsers() {
+        showToast("User management feature will be implemented", "info");
+      }
+
+      function showAnalytics() {
+        showToast("Analytics feature will be implemented", "info");
+      }
+
+      function showGrades() {
+        showToast("Grades management feature will be implemented", "info");
+      }
+
+      function showSystemSettings() {
+        showToast("System settings will be implemented", "info");
+      }
+
+      function showReports() {
+        showToast("Reports feature will be implemented", "info");
+      }
+
+      // Password strength checker
+      function checkPasswordStrength(password) {
+        const strengthIndicator = document.getElementById("passwordStrength");
+        let strength = 0;
+        let feedback = [];
+
+        if (password.length >= 8) strength++;
+        else feedback.push("At least 8 characters");
+
+        if (/[A-Z]/.test(password)) strength++;
+        else feedback.push("One uppercase letter");
+
+        if (/[a-z]/.test(password)) strength++;
+        else feedback.push("One lowercase letter");
+
+        if (/[0-9]/.test(password)) strength++;
+        else feedback.push("One number");
+
+        if (/[^A-Za-z0-9]/.test(password)) strength++;
+        else feedback.push("One special character");
+
+        const strengthColors = [
+          "text-red-500",
+          "text-red-400",
+          "text-yellow-500",
+          "text-yellow-400",
+          "text-green-500",
+        ];
+        const strengthTexts = ["Very Weak", "Weak", "Fair", "Good", "Strong"];
+
+        strengthIndicator.className = `mt-2 text-xs ${
+          strengthColors[strength - 1] || "text-gray-500"
+        }`;
+        strengthIndicator.textContent = password
+          ? `Strength: ${strengthTexts[strength - 1] || "Very Weak"}${
+              feedback.length ? " - Need: " + feedback.join(", ") : ""
+            }`
+          : "";
+      }
+
+      // Password match checker
+      function checkPasswordMatch() {
+        const newPassword = document.getElementById("newPassword").value;
+        const confirmPassword =
+          document.getElementById("confirmPassword").value;
+        const matchIndicator = document.getElementById("passwordMatch");
+
+        if (confirmPassword) {
+          if (newPassword === confirmPassword) {
+            matchIndicator.textContent = "✓ Passwords match";
+            matchIndicator.className = "mt-1 text-xs text-green-600";
+          } else {
+            matchIndicator.textContent = "✗ Passwords do not match";
+            matchIndicator.className = "mt-1 text-xs text-red-600";
+          }
+        } else {
+          matchIndicator.textContent = "";
+        }
+      }
+
+      // Initialize Dashboard
+      async function initDashboard() {
+        // Hide loading overlay after a short delay to show the loading animation
+        setTimeout(() => {
+          document.getElementById("loadingOverlay").style.display = "none";
+        }, 2000);
+
+        // Check authentication state
+        onAuthStateChanged(auth, (user) => {
+          if (user) {
+            currentUser = user;
+            loadUserProfile();
+          } else {
+            window.location.href = "login.html";
+          }
+        });
+      }
+
+      // Event Listeners
+      document.addEventListener("DOMContentLoaded", function () {
+        initDashboard();
+
+        // Mobile menu toggle
+        document
+          .getElementById("mobileMenuBtn")
+          .addEventListener("click", function () {
+            document.getElementById("sidebar").classList.toggle("show");
+          });
+
+        // User dropdown toggle
+        document
+          .getElementById("dashUserBtn")
+          .addEventListener("click", function (e) {
+            e.stopPropagation();
+            const dropdown = document.getElementById("dashUserDropdown");
+            dropdown.classList.toggle("hidden");
+          });
+
+        // Close dropdown when clicking outside
+        document.addEventListener("click", function () {
+          const dropdown = document.getElementById("dashUserDropdown");
+          if (!dropdown.classList.contains("hidden")) {
+            dropdown.classList.add("hidden");
+          }
+        });
+
+        // Profile modal
+        document
+          .getElementById("myProfile")
+          .addEventListener("click", function (e) {
+            e.preventDefault();
+            document.getElementById("dashUserDropdown").classList.add("hidden");
+            showModal("profileModal");
+          });
+
+        // Change password modal
+        document
+          .getElementById("changePassword")
+          .addEventListener("click", function (e) {
+            e.preventDefault();
+            document.getElementById("dashUserDropdown").classList.add("hidden");
+            showModal("changePasswordModal");
+          });
+
+        // Notifications modal
+        document
+          .getElementById("notificationsBtn")
+          .addEventListener("click", function () {
+            showModal("notificationsModal");
+          });
+
+        // Logout
+        document
+          .getElementById("dashLogout")
+          .addEventListener("click", function (e) {
+            e.preventDefault();
+            handleLogout();
+          });
+
+        // Modal close buttons
+        document.querySelectorAll(".modal-close").forEach((button) => {
+          button.addEventListener("click", function () {
+            const modal = this.closest(".modal");
+            if (modal) {
+              hideModal(modal.id);
+            }
+          });
+        });
+
+        // Change password form
+        document
+          .getElementById("changePasswordForm")
+          .addEventListener("submit", handleChangePassword);
+
+        // Password strength checker
+        document
+          .getElementById("newPassword")
+          .addEventListener("input", function () {
+            checkPasswordStrength(this.value);
+          });
+
+        // Password match checker
+        document
+          .getElementById("confirmPassword")
+          .addEventListener("input", checkPasswordMatch);
+
+        // Mark all notifications as read
+        document
+          .getElementById("markAllReadBtn")
+          .addEventListener("click", function () {
+            showToast("All notifications marked as read", "success");
+            updateNotificationBadge(0);
+            // In a real app, this would update the database
+          });
+
+        // Navigation items
+        document.querySelectorAll(".nav-item").forEach((item) => {
+          item.addEventListener("click", function (e) {
+            e.preventDefault();
+
+            // Remove active class from all nav items
+            document
+              .querySelectorAll(".nav-item")
+              .forEach((nav) => nav.classList.remove("active"));
+
+            // Add active class to clicked item
+            this.classList.add("active");
+
+            // Handle navigation based on ID
+            const id = this.id;
+            switch (id) {
+              case "dashboardNav":
+                loadDashboardContent();
+                break;
+              case "timetableNav":
+                showTimetable();
+                break;
+              case "notesNav":
+                showNotes();
+                break;
+              case "pollsNav":
+                showPolls();
+                break;
+              case "eventsNav":
+                showToast("Events feature coming soon", "info");
+                break;
+              case "chatNav":
+                showToast("Group chat feature coming soon", "info");
+                break;
+              case "usersNav":
+                showUsers();
+                break;
+              case "analyticsNav":
+                showAnalytics();
+                break;
+              case "gradesNav":
+                showGrades();
+                break;
+              case "attendanceNav":
+                showToast("Attendance feature coming soon", "info");
+                break;
+              default:
+                console.log("Navigation item not handled:", id);
+            }
+          });
+        });
+
+        // Close sidebar on mobile when clicking outside
+        document.addEventListener("click", function (e) {
+          const sidebar = document.getElementById("sidebar");
+          const mobileMenuBtn = document.getElementById("mobileMenuBtn");
+
+          if (
+            window.innerWidth < 768 &&
+            !sidebar.contains(e.target) &&
+            !mobileMenuBtn.contains(e.target) &&
+            sidebar.classList.contains("show")
+          ) {
+            sidebar.classList.remove("show");
+          }
+        });
+
+        // Handle window resize
+        window.addEventListener("resize", function () {
+          if (window.innerWidth >= 768) {
+            document.getElementById("sidebar").classList.remove("show");
+          }
+        });
+      });
+
+      // Global functions (accessible from HTML onclick attributes)
+      window.showTimetable = showTimetable;
+      window.showNotes = showNotes;
+      window.showPolls = showPolls;
+      window.showGrades = showGrades;
+      window.showUsers = showUsers;
+      window.showAnalytics = showAnalytics;
+      window.closeModal = closeModal;
+      window.votePoll = votePoll;
+      window.uploadNote = uploadNote;
+      window.createPoll = createPoll;
+      window.showSystemSettings = showSystemSettings;
+      window.showReports = showReports;
+    </script>
+
+    <script>
+      // Role-specific initializer (auto-set for static role page)
+      window.__AUTO_ROLE = "admin";
+      document.addEventListener("DOMContentLoaded", () => {
+        const rb = document.getElementById("roleBadge");
+        if (rb) {
+          rb.textContent = "admin";
+          rb.className = "role-badge admin";
+        }
+        const header = document.querySelector("header");
+        if (header) {
+          header.style.background = "";
+          header.style.color = "";
+        }
+        if ("admin" === "student") {
+          document
+            .querySelectorAll(
+              'button[onclick^="upload"], button[onclick^="create"], button[onclick^="showGrades"], button[onclick^="showAnalytics"], button[onclick^="showSystemSettings"], button[onclick^="showReports"]'
+            )
+            .forEach((b) => b?.remove());
+          document
+            .querySelectorAll(
+              '[onclick^="uploadNote"],[onclick^="createPoll"],[onclick^="showGrades"], [onclick^="createPoll"]'
+            )
+            .forEach((el) => el?.remove());
+        } else if ("admin" === "faculty") {
+          document.getElementById("adminSection")?.classList.add("hidden");
+          document
+            .querySelectorAll(
+              'button[onclick^="showSystemSettings"], button[onclick^="showReports"], button[onclick^="showAnalytics"]'
+            )
+            .forEach((b) => b?.remove());
+        } else if ("admin" === "admin") {
+          document.getElementById("adminSection")?.classList.remove("hidden");
+          document.getElementById("facultySection")?.classList.remove("hidden");
+        }
+        const nav = document.querySelector(
+          "header .flex.items-center.justify-between div"
+        );
+        if (nav) {
+          const span = document.createElement("span");
+          span.id = "topRoleBadge";
+          span.className =
+            "ml-4 inline-block px-3 py-1 rounded-full text-sm font-semibold";
+          span.textContent = "ADMIN";
+          if ("admin" === "student") {
+            span.style.background = "#3b82f6";
+            span.style.color = "white";
+          }
+          if ("admin" === "faculty") {
+            span.style.background = "#10b981";
+            span.style.color = "white";
+          }
+          if ("admin" === "admin") {
+            span.style.background = "#8b5cf6";
+            span.style.color = "white";
+          }
+          nav.appendChild(span);
+        }
+      });
+    </script>
+  </body>
+</html>
